@@ -116,7 +116,10 @@ class WorkInSite(Connect):
 		"""
 		dict_coefficient = {self.name_1: 0.0}
 		box = self.redy_soup.find(class_='box kfbox clearfix')
-		row = box.find_all(class_='row2 clearfix rowkoef')
+		try:
+			row = box.find_all(class_='row2 clearfix rowkoef')
+		except AttributeError:
+			return dict_coefficient
 		for i in row:
 			first_team = i.find_next(class_='text-right').text
 			first_coefficient, second_coefficient = i.find_next(class_='text-center').text.strip().replace('\xa0', '').split('–')
