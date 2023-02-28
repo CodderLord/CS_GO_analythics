@@ -11,6 +11,9 @@ from help_file import translate_to_datatime, NOW_time, first_name_dict, second_n
 	second_same_name_dict
 
 
+from data_analysis import DataAnalysis
+
+
 software_names = [SoftwareName.CHROME.value]
 operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
 DOM = 'https://game-tournaments.com'
@@ -19,31 +22,29 @@ DOM = 'https://game-tournaments.com'
 class Soup(BeautifulSoup):
 	def __init__(self, url):
 		super().__init__()
-		self.__url = url
-		self.__bs = BeautifulSoup
+		self.url = url
+		self.bs = BeautifulSoup
 
 
 class Connect(Soup):
 	def __init__(self, url):
 		super().__init__(url)
-		self.__requests = requests
-		self.__user_agent = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
-		self._redy_soup = self.try_to_connect(url)
+		self.requests = requests
+		self.user_agent = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+		self.redy_soup = self.try_to_connect(url)
 
 	def try_to_connect(self, url):
-		__html_url = self.requests.get(url, headers={'user-agent': f'{self.user_agent.get_random_user_agent()}'})
+		html_url = self.requests.get(url, headers={'user-agent': f'{self.user_agent.get_random_user_agent()}'})
 		# check status code
-		if __html_url.status_code == 200:
-			print('Status code is o`k :)')
+		if html_url.status_code == 200:
 			# HTML code ready to parse
-			return self.connect_site(__html_url)
+			return self.connect_site(html_url)
 		else:
-			print('Status code is NOT o`k')
 			raise ValueError
 
 	def connect_site(self, html_url):
-		__redy_soup = self.bs(html_url.text, 'html.parser')
-		return __redy_soup
+		redy_soup = self.bs(html_url.text, 'html.parser')
+		return redy_soup
 
 
 class WorkInSite(Connect):
@@ -54,13 +55,13 @@ class WorkInSite(Connect):
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			raise ValueError
 		self.check_game()
-		self.score_dict = self.find_history_tvt()
+		self.history_score_dict = self.find_history_tvt()
 		self.best_of_number = self.find_best_of()
 		self.coefficient_dict = self.find_coefficient_on_bookmaker()
 		self.dict_old_scores = self.find_form_teams()
-		self.win_1, self.win_2 = self.find_experience()
-		self.find_same_teams()
-		# and first_same_dict, second_same_dict
+		self.win_1, self.win_2 = self.find_experience()  # number of team wins
+		self.find_same_teams()  # first_same_dict, second_same_dict
+		DataAnalysis(history_score_dict=self.history_score_dict, best_of_number=self.best_of_number, coefficient_dict=self.coefficient_dict, dict_old_scores=self.dict_old_scores, win_1=self.win_1, win_2=self.win_2)
 
 	def check_game(self):
 		"""
@@ -113,14 +114,14 @@ class WorkInSite(Connect):
 		how many game (bo1-bo2-bo3-bo5)
 		:return: int
 		"""
-		return self.redy_soup.find(class_='stage-time').text.split(', ')[-1].split(' ')[-1]
+		return self.redy_soup.find(class_='stage-time').text.split(', ')[-1].split(' ')[-1].strip()
 
 	def find_coefficient_on_bookmaker(self):
 		"""
 		which coefficient on open bookmakers
 		:return:dict_coefficient
 		"""
-		dict_coefficient = {self.name_1: 0.0}
+		dict_coefficient = {self.name_1: 0.0, self.name_2: 0.0}
 		box = self.redy_soup.find(class_='box kfbox clearfix')
 		try:
 			row = box.find_all(class_='row2 clearfix rowkoef')
@@ -128,13 +129,12 @@ class WorkInSite(Connect):
 			return dict_coefficient
 		for i in row:
 			first_team = i.find_next(class_='text-right').text
+			second_team = i.find_all_next('td')[2].text
 			first_coefficient, second_coefficient = i.find_next(class_='text-center').text.strip().replace('\xa0', '').split('–')
-			try:
-				dict_coefficient[first_team] = (dict_coefficient[first_team] + float(first_coefficient))/2 \
-					if dict_coefficient[first_team] != 0.0 else float(first_coefficient)
-			except KeyError:
-				dict_coefficient[self.name_1] = (dict_coefficient[self.name_1] + float(second_coefficient))/2 \
-					if dict_coefficient[self.name_1] != 0.0 else float(second_coefficient)
+			dict_coefficient[first_team] = (dict_coefficient[first_team] + float(first_coefficient))/2 \
+				if dict_coefficient[first_team] != 0.0 else float(first_coefficient)
+			dict_coefficient[second_team] = (dict_coefficient[second_team] + float(second_coefficient))/2 \
+				if dict_coefficient[second_team] != 0.0 else float(second_coefficient)
 		return dict_coefficient
 
 	def find_form_teams(self):
