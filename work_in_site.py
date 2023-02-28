@@ -1,8 +1,14 @@
 import requests
+
 from bs4 import BeautifulSoup
+
+
 from random_user_agent.user_agent import UserAgent
 from random_user_agent.params import SoftwareName, OperatingSystem
-from help_file import translate_to_datatime, NOW_time
+
+
+from help_file import translate_to_datatime, NOW_time, first_name_dict, second_name_dict, first_same_name_dict,\
+	second_same_name_dict
 
 
 software_names = [SoftwareName.CHROME.value]
@@ -13,31 +19,31 @@ DOM = 'https://game-tournaments.com'
 class Soup(BeautifulSoup):
 	def __init__(self, url):
 		super().__init__()
-		self.url = url
-		self.bs = BeautifulSoup
+		self.__url = url
+		self.__bs = BeautifulSoup
 
 
 class Connect(Soup):
 	def __init__(self, url):
 		super().__init__(url)
-		self.requests = requests
-		self.user_agent = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
-		self.redy_soup = self.try_to_connect(url)
+		self.__requests = requests
+		self.__user_agent = UserAgent(software_names=software_names, operating_systems=operating_systems, limit=100)
+		self._redy_soup = self.try_to_connect(url)
 
 	def try_to_connect(self, url):
-		html_url = self.requests.get(url, headers={'user-agent': f'{self.user_agent.get_random_user_agent()}'})
+		__html_url = self.requests.get(url, headers={'user-agent': f'{self.user_agent.get_random_user_agent()}'})
 		# check status code
-		if html_url.status_code == 200:
+		if __html_url.status_code == 200:
 			print('Status code is o`k :)')
 			# HTML code ready to parse
-			return self.connect_site(html_url)
+			return self.connect_site(__html_url)
 		else:
 			print('Status code is NOT o`k')
 			raise ValueError
 
 	def connect_site(self, html_url):
-		redy_soup = self.bs(html_url.text, 'html.parser')
-		return redy_soup
+		__redy_soup = self.bs(html_url.text, 'html.parser')
+		return __redy_soup
 
 
 class WorkInSite(Connect):
@@ -53,8 +59,8 @@ class WorkInSite(Connect):
 		self.coefficient_dict = self.find_coefficient_on_bookmaker()
 		self.dict_old_scores = self.find_form_teams()
 		self.win_1, self.win_2 = self.find_experience()
-		self.same_team_list_1 = []
-		self.same_team_list_2 = []
+		self.find_same_teams()
+		# and first_same_dict, second_same_dict
 
 	def check_game(self):
 		"""
@@ -148,12 +154,14 @@ class WorkInSite(Connect):
 			name_1_2 = i.find_next(class_='teamname c2').text.strip()
 			year_1, month_1, day_1 = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			delta_1 = translate_to_datatime(year=int(year_1), month=int(month_1), day=int(day_1)) - NOW_time
-			if delta_1.days >= -60:
+			if delta_1.days >= -70:
 				score_1, score_2 = i.find_next(class_='vs').find_next('span').get('data-score').split(' : ')
+				score_1, score_2 = int(score_1.replace('*', '')), int(score_2.replace('*', ''))
+				self.add_names_to_dict(1, name_1_1, name_1_2, score_1, score_2)
 				try:
-					dict_scores[name_1_1] += int(score_1.replace('*', ''))
+					dict_scores[name_1_1] += score_1
 				except KeyError:
-					dict_scores[name_1_2] += int(score_2.replace('*', ''))
+					dict_scores[name_1_2] += score_2
 		# ----------------------
 		ready_soup_url_2 = self.try_to_connect(href_2)
 		box_before = ready_soup_url_2.find_all(class_='box clearfix')[1]
@@ -163,12 +171,14 @@ class WorkInSite(Connect):
 			name_2_2 = i.find_next(class_='teamname c2').text.strip()
 			year_2, month_2, day_2 = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			delta_2 = translate_to_datatime(year=int(year_2), month=int(month_2), day=int(day_2)) - NOW_time
-			if delta_2.days >= -60:
+			if delta_2.days >= -70:
 				score_1, score_2 = i.find_next(class_='vs').find_next('span').get('data-score').split(' : ')
+				score_1, score_2 = int(score_1.replace('*', '')), int(score_2.replace('*', ''))
+				self.add_names_to_dict(2, name_2_1, name_2_2, score_1, score_2)
 				try:
-					dict_scores[name_2_1] += int(score_1.replace('*', ''))
+					dict_scores[name_2_1] += score_1
 				except KeyError:
-					dict_scores[name_2_2] += int(score_2.replace('*', ''))
+					dict_scores[name_2_2] += score_2
 		return dict_scores
 
 	def find_experience(self):
@@ -192,16 +202,32 @@ class WorkInSite(Connect):
 			winn_2 = 0
 		return winn_1, winn_2
 
-	def find_same_team(self, tr_all):
+	@staticmethod
+	def find_same_teams():
 		"""
-		get tr_all
-		find one more team which is in the history of games team here and there
-		:return:
+		filterer dicts to find same teams on first_name_dict and second_name_dict
 		"""
-		main_list = []
-		for i in tr_all:
-			name_1 = i.find_next(class_='teamname c1').text.strip()
-			name_2 = i.find_next(class_='teamname c2').text.strip()
+		first_list = first_name_dict.keys()
+		for i in first_list:
+			try:
+				__try_to_err = second_name_dict[i]  # try to find name from list first to dict second else continue
+				# first number score its col. maps which win self.name_1(if first) or self.name_2(if second)
+				first_same_name_dict[i] = first_name_dict[i]
+				second_same_name_dict[i] = second_name_dict[i]
+			except KeyError:
+				continue
 
-		def add_same_team_to_dict():
-			pass
+	def add_names_to_dict(self, main_naim_team: int, pos_firs: str, pos_second, score_1: int, score_2: int):
+		"""
+		add all teams and score(map) to dict
+		"""
+		if pos_firs != self.name_1 and pos_firs != self.name_2:
+			if main_naim_team == 1:
+				first_name_dict[pos_firs] = f'{score_1}-{score_2}'
+			if main_naim_team == 2:
+				second_name_dict[pos_firs] = f'{score_1}-{score_2}'
+		if pos_second != self.name_1 and pos_second != self.name_2:
+			if main_naim_team == 1:
+				first_name_dict[pos_firs] = f'{score_2}-{score_1}'
+			if main_naim_team == 2:
+				second_name_dict[pos_firs] = f'{score_2}-{score_1}'
