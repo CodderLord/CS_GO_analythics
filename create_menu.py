@@ -1,9 +1,11 @@
+import time
 import tkinter as tk
 from tkinter.ttk import Progressbar
 import tkinter.messagebox as mb
 from tkinter import Label
 from work_in_site import WorkInSite
 import webbrowser
+# from data_analysis import 'class'
 
 
 class App(tk.Tk):
@@ -40,8 +42,9 @@ class App(tk.Tk):
 		self.btn_more.destroy()
 		self.btn_next.destroy()
 		self.name.destroy()
-		progressbar = Progressbar(self, length=300, style='black.Horizontal.TProgressbar')
+		progressbar = Progressbar(self, length=300, style='black.Horizontal.TProgressbar', mode="indeterminate")
 		progressbar.pack(padx=5, pady=5)
+		progressbar.start(10)
 		btn_cancel = tk.Button(self, text="Отмена", command=lambda: self.destroy())
 		btn_cancel.pack(padx=5, pady=5)
 		try:
