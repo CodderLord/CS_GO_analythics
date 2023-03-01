@@ -127,7 +127,7 @@ class DataAnalysis:
 		func find percent from score
 		:param score_1: first score int team(coefficient, score, etc.
 		:param score_2: second score int team(coefficient, score, etc.
-		:return: str: redy percent
+		:return: str: redy percents
 		"""
 		percent_100 = int(score_1) + int(score_2)
 		percent_1 = percent_100 / 100

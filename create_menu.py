@@ -1,11 +1,9 @@
-import time
 import tkinter as tk
 from tkinter.ttk import Progressbar
 import tkinter.messagebox as mb
 from tkinter import Label
 from work_in_site import WorkInSite
 import webbrowser
-# from data_analysis import 'class'
 
 
 class App(tk.Tk):
