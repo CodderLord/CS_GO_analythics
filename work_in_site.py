@@ -61,7 +61,7 @@ class WorkInSite(Connect):
 		self.dict_old_scores = self.find_form_teams()
 		self.win_1, self.win_2 = self.find_experience()  # number of team wins
 		self.find_same_teams()  # first_same_dict, second_same_dict
-		DataAnalysis(history_score_dict=self.history_score_dict, best_of_number=self.best_of_number, coefficient_dict=self.coefficient_dict, dict_old_scores=self.dict_old_scores, win_1=self.win_1, win_2=self.win_2)
+		DataAnalysis(name1=self.name_1, name2=self.name_2, history_score_dict=self.history_score_dict, best_of_number=self.best_of_number, coefficient_dict=self.coefficient_dict, dict_old_scores=self.dict_old_scores, win_1=self.win_1, win_2=self.win_2)
 
 	def check_game(self):
 		"""
