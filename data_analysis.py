@@ -105,8 +105,8 @@ class DataAnalysis:
 			first_same_score += int(first_same_name_dict[i].split('-')[0])
 			second_same_score += int(first_same_name_dict[i].split('-')[1])
 			# ------------------------------------------------------------
-			second_same_score += int(first_same_name_dict[i].split('-')[0])
-			first_same_score += int(first_same_name_dict[i].split('-')[1])
+			second_same_score += int(second_same_name_dict[i].split('-')[0])
+			first_same_score += int(second_same_name_dict[i].split('-')[1])
 		if first_same_score != 0 and second_same_score != 0:
 			# if same teams not found
 			percent_team_one, percent_team_two = self.calculate_percents(first_same_score, second_same_score)
