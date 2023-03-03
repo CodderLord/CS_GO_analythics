@@ -1,4 +1,5 @@
 from help_file import first_same_name_dict, second_same_name_dict
+from create_pptx import *
 
 
 class DataAnalysis:
@@ -16,12 +17,12 @@ class DataAnalysis:
 		self.scores_to_win_team_1 = 100
 		self.scores_to_win_team_1 = 100
 		# -------------------------------------------
-		self.calculate_history_score()
-		self.calculate_best_of_number()
-		self.calculate_coefficient()
-		self.calculate_old_scores()
-		self.calculate_winning()
-		self.calculate_same_teams()
+		self.percent_history_one, self.percent_history_two = self.calculate_history_score()
+		self.percent_coefficient_one, self.percent_coefficient_two = self.calculate_coefficient()
+		self.percent_form_one, self.percent_form_two = self.calculate_old_scores()
+		self.percent_winning_one, self.percent_winning_two = self.calculate_winning()
+		self.percent_same_one, self.percent_same_two = self.calculate_same_teams()
+
 
 	def calculate_history_score(self):
 		"""
@@ -38,13 +39,8 @@ class DataAnalysis:
 		print(self.history_score_dict)
 		print('percent_history_1, percent_history_2')
 		print(percent_team_one, percent_team_two)
+		return percent_team_one, percent_team_two
 
-	def calculate_best_of_number(self):
-		"""
-		score of best (bo1, bo2, bo3, bo5)
-		"""
-		print('best_of_number')
-		print(self.best_of_number)
 
 	def calculate_coefficient(self):
 		"""
@@ -61,6 +57,7 @@ class DataAnalysis:
 		print(self.coefficient_dict)
 		print('percent_coefficient_1, percent_coefficient_2')
 		print(percent_team_one, percent_team_two)
+		return percent_team_one, percent_team_two
 
 	def calculate_old_scores(self):
 		"""
@@ -79,6 +76,7 @@ class DataAnalysis:
 		print(self.dict_old_scores)
 		print('old_score_1, old_score_2')
 		print(percent_team_one, percent_team_two)
+		return percent_team_one, percent_team_two
 
 	def calculate_winning(self):
 		"""
@@ -93,6 +91,7 @@ class DataAnalysis:
 		print(self.win_1, self.win_2)
 		print('win_1, win_2')
 		print(percent_team_one, percent_team_two)
+		return percent_team_one, percent_team_two
 
 	def calculate_same_teams(self):
 		"""
@@ -120,6 +119,7 @@ class DataAnalysis:
 		print(second_same_score)
 		print('percent_team_one, percent_team_two')
 		print(percent_team_one, percent_team_two)
+		return percent_team_one, percent_team_two
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):
