@@ -23,7 +23,6 @@ class DataAnalysis:
 		self.percent_winning_one, self.percent_winning_two = self.calculate_winning()
 		self.percent_same_one, self.percent_same_two = self.calculate_same_teams()
 
-
 	def calculate_history_score(self):
 		"""
 		assessment of past results of confrontation between teams and find percent winning
@@ -131,6 +130,10 @@ class DataAnalysis:
 		"""
 		percent_100 = int(score_1) + int(score_2)
 		percent_1 = percent_100 / 100
-		percent_team_one = f"{int(score_1 / percent_1)}%"
-		percent_team_two = f"{int(score_2 / percent_1)}%"
+		try:
+			percent_team_one = f"{int(score_1 / percent_1)}%"
+			percent_team_two = f"{int(score_2 / percent_1)}%"
+		except ZeroDivisionError:
+			percent_team_one = "50%"
+			percent_team_two = "50%"
 		return percent_team_one, percent_team_two
