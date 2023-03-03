@@ -56,13 +56,19 @@ def create_directory_team(name_1, name_2):
 		makedirs('team_info')
 	if not path.exists(new_path):
 		makedirs(new_path)
-	else:
-		remove(new_path)
 	return new_path
 
 
-def download_img(url):
-	pass
+def download_img(url, name, path_main):
+	p = requests.get(url)
+	try:
+		try_to_open = open(r"{}\{}.jpg".format(path_main, name))
+		try_to_open.close()
+	except Exception as err:
+		print(err)
+		out = open(r"{}\{}.jpg".format(path_main, name), "wb")
+		out.write(p.content)
+		out.close()
 
 
 class WorkInSite(Connect):
@@ -72,6 +78,8 @@ class WorkInSite(Connect):
 		self.name_1, self.name_2 = self.title.split(' vs ')
 		self.img_url_1, self.img_url_2 = self.find_img()
 		self.path = create_directory_team(self.name_1, self.name_2)
+		download_img(self.img_url_1, self.name_1, self.path)
+		download_img(self.img_url_2, self.name_2, self.path)
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			raise ValueError
 		self.check_game()
