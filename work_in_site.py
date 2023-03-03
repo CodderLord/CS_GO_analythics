@@ -14,6 +14,9 @@ from help_file import translate_to_datatime, NOW_time, first_name_dict, second_n
 from data_analysis import DataAnalysis
 
 
+from os import makedirs, path, remove
+
+
 software_names = [SoftwareName.CHROME.value]
 operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
 DOM = 'https://game-tournaments.com'
@@ -47,11 +50,28 @@ class Connect(Soup):
 		return redy_soup
 
 
+def create_directory_team(name_1, name_2):
+	new_path = r'team_info\{}_vs_{}'.format(name_1.replace(' ', ''), name_2.replace(' ', ''))
+	if not path.exists('team_info'):
+		makedirs('team_info')
+	if not path.exists(new_path):
+		makedirs(new_path)
+	else:
+		remove(new_path)
+	return new_path
+
+
+def download_img(url):
+	pass
+
+
 class WorkInSite(Connect):
 	def __init__(self, url):
 		super().__init__(url)
 		self.title = self.redy_soup.find(class_='match-header').find('h1').text.strip().replace('Матч ', '')
 		self.name_1, self.name_2 = self.title.split(' vs ')
+		self.img_url_1, self.img_url_2 = self.find_img()
+		self.path = create_directory_team(self.name_1, self.name_2)
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			raise ValueError
 		self.check_game()
@@ -76,6 +96,11 @@ class WorkInSite(Connect):
 		if time_g < NOW_time:
 			print('This game is played')
 			raise ValueError
+
+	def find_img(self):
+		url_img_1 = DOM + self.redy_soup.find(class_='mop1').find(class_='mteamlogo').find('img').get('src')
+		url_img_2 = DOM + self.redy_soup.find(class_='mop2').find(class_='mteamlogo').find('img').get('src')
+		return url_img_1, url_img_2
 
 	def find_history_tvt(self):
 		"""
