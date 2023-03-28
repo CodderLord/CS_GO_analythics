@@ -1,7 +1,10 @@
-from create_menu import App
+from qt.global_window import LinkInputWindow
+from PyQt6.QtWidgets import QApplication
+import sys
 
 
 if __name__ == '__main__':
-    app = App()
-    app.mainloop()
+    app = QApplication(sys.argv)
+    first_window = LinkInputWindow()
+    app.exec()
 
