@@ -30,7 +30,7 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="0" column="0">
-    <widget class="QProgressBar" name="ProgressbBar">
+    <widget class="QProgressBar" name="ProgressBar">
      <property name="styleSheet">
       <string notr="true">color: rgb(25, 43, 69);</string>
      </property>
