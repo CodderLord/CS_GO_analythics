@@ -13,8 +13,6 @@ from parsing.help_file import translate_to_datatime, NOW_time, first_name_dict, 
 	second_same_name_dict
 
 
-from analytics.data_analysis import DataAnalysis
-
 from PyQt6.QtGui import QPixmap
 
 
@@ -97,7 +95,7 @@ class WorkInSite(Connect):
 		self.dict_old_scores = self.find_form_teams()
 		self.win_1, self.win_2 = self.find_experience()  # number of team wins
 		self.find_same_teams()  # first_same_dict, second_same_dict
-		DataAnalysis(name1=self.name_1, name2=self.name_2, history_score_dict=self.history_score_dict, best_of_number=self.best_of_number, coefficient_dict=self.coefficient_dict, dict_old_scores=self.dict_old_scores, win_1=self.win_1, win_2=self.win_2)
+
 
 	def check_game(self):
 		"""
@@ -242,6 +240,9 @@ class WorkInSite(Connect):
 		except IndexError:
 			winn_2 = 0
 		return winn_1, winn_2
+
+	def ret_all_value(self):
+		return self.name_1, self.name_2, self.history_score_dict, self.best_of_number, self.coefficient_dict, self.dict_old_scores, self.win_1, self.win_2
 
 	@staticmethod
 	def find_same_teams():
