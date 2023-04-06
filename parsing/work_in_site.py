@@ -1,4 +1,4 @@
-import time
+import json
 
 import requests
 
@@ -13,10 +13,7 @@ from parsing.help_file import translate_to_datatime, NOW_time, first_name_dict, 
 	second_same_name_dict
 
 
-from PyQt6.QtGui import QPixmap
-
-
-from os import makedirs, path, remove
+from os import makedirs, path
 
 
 software_names = [SoftwareName.CHROME.value]
@@ -61,10 +58,6 @@ def create_directory_team(name_1, name_2):
 	return new_path
 
 
-def use_img():
-	pass
-
-
 def download_img(url, name, path_main):
 	p = requests.get(url)
 	try:
@@ -80,6 +73,7 @@ def download_img(url, name, path_main):
 class WorkInSite(Connect):
 	def __init__(self, url):
 		super().__init__(url)
+		self.team_info_dict = {}
 		self.title = self.redy_soup.find(class_='match-header').find('h1').text.strip().replace('Матч ', '')
 		self.name_1, self.name_2 = self.title.split(' vs ')
 		self.img_url_1, self.img_url_2 = self.find_img()
@@ -95,7 +89,29 @@ class WorkInSite(Connect):
 		self.dict_old_scores = self.find_form_teams()
 		self.win_1, self.win_2 = self.find_experience()  # number of team wins
 		self.find_same_teams()  # first_same_dict, second_same_dict
+		try:
+			self.team_info_dict_fill()
+		except Exception as err:
+			print(err)
 
+	def team_info_dict_fill(self):
+		self.team_info_dict['title'] = self.title if not None else 0
+		self.team_info_dict['name_1'] = self.name_1 if not None else 0
+		self.team_info_dict['name_2'] = self.name_2 if not None else 0
+		self.team_info_dict['img_url_1'] = self.img_url_1 if not None else 0
+		self.team_info_dict['img_url_2'] = self.img_url_2 if not None else 0
+		self.team_info_dict['path_on_disc'] = self.path if not None else 0
+		self.team_info_dict['history_score_dict'] = self.history_score_dict if not None else 0
+		self.team_info_dict['best_of_number'] = self.best_of_number if not None else 0
+		self.team_info_dict['coefficient_dict'] = self.coefficient_dict if not None else 0
+		self.team_info_dict['dict_old_scores'] = self.dict_old_scores if not None else 0
+		self.team_info_dict['win_1'] = self.win_1 if not None else 0
+		self.team_info_dict['win_2'] = self.win_2 if not None else 0
+		self.save_parse_info_on_js()
+
+	def save_parse_info_on_js(self):
+		with open(f"{self.path}/config", "w") as fh:
+			json.dump(self.team_info_dict, fh)
 
 	def check_game(self):
 		"""
