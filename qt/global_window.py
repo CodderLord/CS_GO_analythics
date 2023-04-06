@@ -1,49 +1,30 @@
 #!/bin/env python3
 # coding: utf-8
-import time
-import threading
 
 from PyQt6 import uic
-from PyQt6.QtCore import pyqtSignal, QThread
+
+import sys
+
 from PyQt6.QtGui import QIcon, QPixmap
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QVBoxLayout, QDialog
-from parsing.work_in_site import WorkInSite
-from analytics.data_analysis import DataAnalysis
-
-
-class ThreadLogic(QThread):
-	progress_bar_signal = pyqtSignal(int)
-
-	def __init__(self, link):
-		super().__init__()
-		self.link = link
-
-	def run(self):
-		wk = WorkInSite(self.link)
-		name1, name2, history_score_dict, best_of_number, coefficient_dict, dict_old_scores, win_1, win_2 = wk.ret_all_value()
-		self.progress_bar_signal.emit(20)
-		dt = DataAnalysis(name1, name2, history_score_dict, best_of_number, coefficient_dict, dict_old_scores, win_1, win_2)
-		self.progress_bar_signal.emit(30)
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QVBoxLayout, QDialog, QApplication, QWidget
+from multi_threading.q_thread_worker import ThreadLogic
 
 
 class WindowPB(QDialog):
 	def __init__(self, window):
 		super().__init__(window)
-		self.val = 0
 		self.window = window
-		self.title = "PyQt6 ProgressBar"
-		self.top = 200
-		self.left = 500
-		self.width = 300
-		self.height = 100
-		self.setWindowIcon(QIcon("icon.png"))
-		self.setWindowTitle(self.title)
-		self.setGeometry(self.left, self.top, self.width, self.height)
+		self.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
+		self.setWindowTitle("Загрузка")
+		self.setGeometry(500, 200, 300, 100)
 		vbox = QVBoxLayout()
 		self.progressbar = QProgressBar()
+		self.progressbar.setMaximum(0)
 		self.progressbar.setMaximum(100)
-		self.progressbar.setStyleSheet("QProgressBar {border: 2px solid grey;border-radius:8px;padding:1px}"
-		                               "QProgressBar::chunk {background:yellow}")
+		self.progressbar.setTextVisible(False)
+		self.progressbar.setStyleSheet("QProgre"
+		                               "ssBar {border: 2px solid grey;border-radius:2px;padding:1px}"
+		                               "QProgressBar::chunk {background:rgb(255, 255, 255)}")
 		vbox.addWidget(self.progressbar)
 		self.setLayout(vbox)
 
@@ -51,21 +32,14 @@ class WindowPB(QDialog):
 		self.progressbar.setValue(value)
 
 
-class Window(QMainWindow):
-	def __init__(self):
-		super().__init__()
-
-	def connect_to_ui_file(self, file: str):
-		return uic.loadUi(file, self)  # Load the .ui file
-
-
-class LinkInputWindow(Window):
+class LinkInputWindow(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.work_in_thread = None
-		self.window = self.connect_to_ui_file('qt/uis/first_window.ui')
+		self.window = uic.loadUi('qt/uis/first_window.ui', self)
 		self.progressbar_window = WindowPB(self.window)
-		self.window.setWindowIcon(QIcon('icons/data-analytics-CSGO.ico'))
+		self.window.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
+		self.window.setWindowTitle('CS-GO Analytics')
 		self.window.next_button.clicked.connect(self.take_link)
 		self.window.show()
 
@@ -82,9 +56,7 @@ class LinkInputWindow(Window):
 			try:
 				self.window.hide()
 				self.progressbar_window.show()
-				print('qqqq')
 				self.start_work_in_site(link)
-				print('sss')
 			except ValueError:
 				error = QMessageBox()
 				error.setWindowTitle('Ошибка работы с матчем')
@@ -97,12 +69,26 @@ class LinkInputWindow(Window):
 	def start_work_in_site(self, link):
 		self.work_in_thread = ThreadLogic(link)
 		self.work_in_thread.progress_bar_signal.connect(self.progressbar_window.upp_value)
+		self.work_in_thread.finished_signal.connect(self.after_finish)
 		self.work_in_thread.start()
 
+	def after_finish(self):
+		self.close()
+		self.progressbar_window.close()
+		UI()
+		#open_ui()
 
-class UI(Window):
+
+class UI(QMainWindow):
 	def __init__(self):
 		super().__init__()
-		self.connect_to_ui_file('qt/uis/main_window.ui')
-		self.setWindowIcon(QIcon('icons/data-analytics-CSGO.ico'))
-		self.show()
+		self.window = uic.loadUi('qt/uis/main_window.ui', self)
+		self.window.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
+		self.set_basis_info_tab()
+		self.window.show()
+
+	def set_basis_info_tab(self):
+		self.window.png_team_one.setPixmap(QPixmap('qt/icons/data-analytics-CSGO.ico'))
+		self.window.png_team_one.adjustSize()
+		self.window.png_team_two.setPixmap(QPixmap('qt/icons/data-analytics-CSGO.ico'))
+		self.window.png_team_two.adjustSize()
