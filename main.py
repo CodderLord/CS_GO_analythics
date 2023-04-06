@@ -5,5 +5,6 @@ import sys
 
 if __name__ == '__main__':
     APP = QApplication(sys.argv)
-    first_window = LinkInputWindow()
+    window = LinkInputWindow()
     APP.exec()
+
