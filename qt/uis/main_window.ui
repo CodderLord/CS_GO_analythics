@@ -949,7 +949,7 @@ border: rgb(25, 43, 69);</string>
               <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Несёт общем информацию о опыте команды&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Несёт общем информацию о опыте команды&lt;br/&gt;(за всё время)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -995,13 +995,13 @@ border: rgb(25, 43, 69);</string>
                <widget class="QGraphicsView" name="graphicsView">
                 <property name="minimumSize">
                  <size>
-                  <width>500</width>
+                  <width>445</width>
                   <height>500</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>500</width>
+                  <width>445</width>
                   <height>500</height>
                  </size>
                 </property>
@@ -1027,13 +1027,13 @@ border: rgb(25, 43, 69);</string>
                <widget class="QGraphicsView" name="graphicsView_3">
                 <property name="minimumSize">
                  <size>
-                  <width>500</width>
+                  <width>445</width>
                   <height>500</height>
                  </size>
                 </property>
                 <property name="maximumSize">
                  <size>
-                  <width>500</width>
+                  <width>445</width>
                   <height>500</height>
                  </size>
                 </property>
@@ -1078,18 +1078,15 @@ border: rgb(25, 43, 69);</string>
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout_21">
-           <item row="1" column="1">
-            <spacer name="verticalSpacer_20">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
+           <item row="1" column="0">
+            <widget class="QLabel" name="first_team_form">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Первая команда имеет 50 побед&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-            </spacer>
+            </widget>
            </item>
            <item row="1" column="2">
             <widget class="QLabel" name="second_team_form">
@@ -1101,17 +1098,7 @@ border: rgb(25, 43, 69);</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
-            <widget class="QLabel" name="first_team_form">
-             <property name="styleSheet">
-              <string notr="true">color: rgb(255, 255, 255);</string>
-             </property>
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Первая команда имеет 50 побед&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item row="0" column="1">
+           <item row="0" column="0" colspan="3">
             <widget class="QGroupBox" name="box_graphics">
              <property name="minimumSize">
               <size>
@@ -1124,7 +1111,23 @@ border: rgb(25, 43, 69);</string>
              </property>
              <layout class="QGridLayout" name="gridLayout_20">
               <item row="0" column="0">
-               <widget class="QGraphicsView" name="graphics_form_2"/>
+               <widget class="QLabel" name="label">
+                <property name="minimumSize">
+                 <size>
+                  <width>520</width>
+                  <height>608</height>
+                 </size>
+                </property>
+                <property name="maximumSize">
+                 <size>
+                  <width>520</width>
+                  <height>608</height>
+                 </size>
+                </property>
+                <property name="text">
+                 <string/>
+                </property>
+               </widget>
               </item>
              </layout>
             </widget>
@@ -1150,96 +1153,86 @@ border: rgb(25, 43, 69);</string>
           </property>
           <layout class="QGridLayout" name="gridLayout_23">
            <item row="0" column="0">
-            <widget class="QToolBox" name="tool_box_same_teams">
+            <widget class="QLabel" name="same_team_one_graphics">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>600</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>600</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_same_team_one">
              <property name="styleSheet">
               <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
-             <property name="currentIndex">
-              <number>0</number>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Отношение встреч с одинаковыми командами &lt;br/&gt;ПОБЕДА&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
-             <widget class="QWidget" name="page">
-              <property name="geometry">
-               <rect>
-                <x>0</x>
-                <y>0</y>
-                <width>1095</width>
-                <height>622</height>
-               </rect>
-              </property>
-              <attribute name="label">
-               <string>Ник команды</string>
-              </attribute>
-              <layout class="QGridLayout" name="gridLayout_24">
-               <item row="1" column="0">
-                <widget class="QGroupBox" name="same_teams_content_box">
-                 <property name="title">
-                  <string/>
-                 </property>
-                 <layout class="QGridLayout" name="gridLayout_25">
-                  <item row="1" column="0">
-                   <widget class="QGroupBox" name="first_same_teams_box">
-                    <property name="title">
-                     <string/>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_26">
-                     <item row="1" column="0">
-                      <widget class="QGraphicsView" name="graphics_first_same_team">
-                       <property name="minimumSize">
-                        <size>
-                         <width>500</width>
-                         <height>500</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="first_same_teams_label">
-                       <property name="text">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Результаты с командой номер 1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                  <item row="1" column="1">
-                   <widget class="QGroupBox" name="second_same_teams_box">
-                    <property name="title">
-                     <string/>
-                    </property>
-                    <layout class="QGridLayout" name="gridLayout_27">
-                     <item row="2" column="0">
-                      <widget class="QLabel" name="second_same_teams_label">
-                       <property name="text">
-                        <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Результаты с командой номер 2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                       </property>
-                      </widget>
-                     </item>
-                     <item row="1" column="0">
-                      <widget class="QGraphicsView" name="graphics_second_same_team">
-                       <property name="minimumSize">
-                        <size>
-                         <width>500</width>
-                         <height>500</height>
-                        </size>
-                       </property>
-                      </widget>
-                     </item>
-                    </layout>
-                   </widget>
-                  </item>
-                 </layout>
-                </widget>
-               </item>
-               <item row="0" column="0">
-                <widget class="QLabel" name="label_7">
-                 <property name="text">
-                  <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Команда (ник команды)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-                 </property>
-                </widget>
-               </item>
-              </layout>
-             </widget>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="1">
+         <widget class="QGroupBox" name="groupBox">
+          <property name="minimumSize">
+           <size>
+            <width>0</width>
+            <height>600</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>16777215</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(25, 43, 69);
+border: rgb(25, 43, 69);</string>
+          </property>
+          <property name="title">
+           <string/>
+          </property>
+          <layout class="QGridLayout" name="gridLayout_24">
+           <item row="0" column="0">
+            <widget class="QLabel" name="same_team_two_graphics">
+             <property name="minimumSize">
+              <size>
+               <width>0</width>
+               <height>600</height>
+              </size>
+             </property>
+             <property name="maximumSize">
+              <size>
+               <width>16777215</width>
+               <height>600</height>
+              </size>
+             </property>
+             <property name="text">
+              <string/>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_same_team_two">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Отношение встреч с одинаковыми командами &lt;br/&gt;ПОРАЖЕНИЕ&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
             </widget>
            </item>
           </layout>
