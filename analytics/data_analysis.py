@@ -1,5 +1,4 @@
 from parsing.help_file import first_same_name_dict, second_same_name_dict
-#from create_pptx import *
 
 
 class DataAnalysis:
@@ -14,14 +13,15 @@ class DataAnalysis:
 		self.win_2: int = int(str(win_2).replace('-', '0'))
 		self.first_same_teams: dict = first_same_name_dict  # dict which have names and scores same teams
 		self.second_same_teams: dict = second_same_name_dict
-		self.scores_to_win_team_1 = 100
-		self.scores_to_win_team_1 = 100
 		# -------------------------------------------
 		self.percent_history_one, self.percent_history_two = self.calculate_history_score()
 		self.percent_coefficient_one, self.percent_coefficient_two = self.calculate_coefficient()
 		self.percent_form_one, self.percent_form_two = self.calculate_old_scores()
 		self.percent_winning_one, self.percent_winning_two = self.calculate_winning()
 		self.percent_same_one, self.percent_same_two = self.calculate_same_teams()
+
+	def ret_all_value(self):
+		return self.percent_history_one, self.percent_history_two, self.percent_coefficient_one, self.percent_coefficient_two, self.percent_form_one, self.percent_form_two, self.percent_winning_one, self.percent_winning_two, self.percent_same_one, self.percent_same_two
 
 	def calculate_history_score(self):
 		"""
