@@ -60,11 +60,13 @@ def create_directory_team(name_1, name_2):
 
 def download_img(url, name, path_main):
 	p = requests.get(url)
-	try_to_open = open(r"{}\{}.jpg".format(path_main, name))
-	try_to_open.close()
-	out = open(r"{}\{}.jpg".format(path_main, name), "wb")
-	out.write(p.content)
-	out.close()
+	try:
+		try_to_open = open(r"{}\{}.jpg".format(path_main, name))
+		try_to_open.close()
+	except FileNotFoundError:
+		out = open(r"{}\{}.jpg".format(path_main, name), "wb")
+		out.write(p.content)
+		out.close()
 
 
 class WorkInSite(Connect):
