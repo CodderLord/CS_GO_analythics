@@ -1,27 +1,56 @@
 from parsing.help_file import first_same_name_dict, second_same_name_dict
+from parsing.help_file import load_config_json
+import json
+
+
+def save_info_team_dict(path, team_info_dict):
+	with open(f"{path}/config", "w+") as fh:
+		json.dump(team_info_dict, fh)
 
 
 class DataAnalysis:
-	def __init__(self, name1, name2, history_score_dict, best_of_number, coefficient_dict, dict_old_scores, win_1, win_2):
-		self.name_1: str = name1
-		self.name_2: str = name2
-		self.history_score_dict: dict or None = history_score_dict  # dict history scores if there is a history
-		self.best_of_number: int = best_of_number  # number of best (bo1, bo2, bo3, bo5)
-		self.coefficient_dict: dict = coefficient_dict  # coefficient on bookmakers
-		self.dict_old_scores: dict = dict_old_scores  # dict which have team names(self.name_1, self.name_2) and their scores
-		self.win_1: int = int(str(win_1).replace('-', '0'))  # score of winning team
-		self.win_2: int = int(str(win_2).replace('-', '0'))
+	def __init__(self, path):
+		self.dict_team_info = load_config_json(path)
+		self.name_1: str = self.dict_team_info['name_1']
+		self.name_2: str = self.dict_team_info['name_2']
+		self.history_score_dict: dict or None = self.dict_team_info['history_score_dict']
+		self.best_of_number: int = self.dict_team_info['best_of_number']  # number of best (bo1, bo2, bo3, bo5)
+		self.coefficient_dict: dict = self.dict_team_info['coefficient_dict']  # coefficient on bookmakers
+		self.dict_old_scores: dict = self.dict_team_info['dict_old_scores']   # dict which have team names(self.name_1, self.name_2) and their scores
+		self.win_1: int = int(str(self.dict_team_info['win_1']).replace('-', '0'))  # score of winning team
+		self.win_2: int = int(str(self.dict_team_info['win_2']).replace('-', '0'))
+		self.percent_win_1 = int(str(self.dict_team_info['percent_win_1']).replace('%', '')) if not 0 else 0
+		self.percent_win_2 = int(str(self.dict_team_info['percent_win_2']).replace('%', '')) if not 0 else 0
+		self.percent_one_team_old_win = self.dict_team_info['team_one_old_scores_win']
+		self.percent_one_team_old_lose = self.dict_team_info['team_one_old_scores_lose']
+		self.percent_two_team_old_win = self.dict_team_info['team_two_old_scores_win']
+		self.percent_two_team_old_lose = self.dict_team_info['team_two_old_scores_lose']
 		self.first_same_teams: dict = first_same_name_dict  # dict which have names and scores same teams
 		self.second_same_teams: dict = second_same_name_dict
+		self.experience_1, self.experience_2 = self.calculate_all_wins()
 		# -------------------------------------------
-		self.percent_history_one, self.percent_history_two = self.calculate_history_score()
-		self.percent_coefficient_one, self.percent_coefficient_two = self.calculate_coefficient()
-		self.percent_form_one, self.percent_form_two = self.calculate_old_scores()
-		self.percent_winning_one, self.percent_winning_two = self.calculate_winning()
-		self.percent_same_one, self.percent_same_two = self.calculate_same_teams()
+		self.dict_team_info['experience_1'], self.dict_team_info['experience_2'] = self.experience_1, self.experience_2
+		self.dict_team_info['percent_experience_1'], self.dict_team_info['percent_experience_2'] = self.calculate_percents_experience()
+		self.dict_team_info['percent_history_one'], self.dict_team_info['percent_history_two'] = self.calculate_history_score()
+		self.dict_team_info['percent_coefficient_one'], self.dict_team_info['percent_coefficient_two'] = self.calculate_coefficient()
+		self.dict_team_info['percent_form_one'], self.dict_team_info['percent_form_two'] = self.calculate_old_scores()
+		self.dict_team_info['percent_winning_one'], self.dict_team_info['percent_winning_two'] = self.calculate_winning()
+		self.dict_team_info['percent_same_one'], self.dict_team_info['percent_same_two'] = self.calculate_same_teams()
+		self.dict_team_info['percent_team_one_old_scores_win'], self.dict_team_info['percent_team_two_old_scores_win'] = self.calculate_percents(sum(self.percent_one_team_old_win), sum(self.percent_two_team_old_win))
+		self.dict_team_info['percent_team_one_old_scores_lose'], self.dict_team_info['percent_team_two_old_scores_lose'] = self.calculate_percents(sum(self.percent_one_team_old_lose), sum(self.percent_two_team_old_lose))
+		save_info_team_dict(self.dict_team_info['path_on_disc'], self.dict_team_info)
 
-	def ret_all_value(self):
-		return self.percent_history_one, self.percent_history_two, self.percent_coefficient_one, self.percent_coefficient_two, self.percent_form_one, self.percent_form_two, self.percent_winning_one, self.percent_winning_two, self.percent_same_one, self.percent_same_two
+	def calculate_percents_experience(self):
+		percents_100 = self.experience_1 + self.experience_2
+		percents_1 = percents_100/100
+		percent_experience_1 = int(self.experience_1 / percents_1)
+		percent_experience_2 = int(self.experience_2 / percents_1)
+		return str(percent_experience_1)+'%', str(percent_experience_2)+'%'
+
+	def calculate_all_wins(self):
+		all_win_1 = int((self.win_1 / self.percent_win_1) * 100)
+		all_win_2 = int((self.win_2 / self.percent_win_2) * 100)
+		return all_win_1, all_win_2
 
 	def calculate_history_score(self):
 		"""
@@ -34,10 +63,6 @@ class DataAnalysis:
 		except TypeError:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
-		print('history_score_dict')
-		print(self.history_score_dict)
-		print('percent_history_1, percent_history_2')
-		print(percent_team_one, percent_team_two)
 		return percent_team_one, percent_team_two
 
 	def calculate_coefficient(self):
@@ -51,10 +76,6 @@ class DataAnalysis:
 		except TypeError:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
-		print('coefficient_dict')
-		print(self.coefficient_dict)
-		print('percent_coefficient_1, percent_coefficient_2')
-		print(percent_team_one, percent_team_two)
 		return percent_team_one, percent_team_two
 
 	def calculate_old_scores(self):
@@ -70,10 +91,6 @@ class DataAnalysis:
 		except TypeError:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
-		print('old_scores')
-		print(self.dict_old_scores)
-		print('old_score_1, old_score_2')
-		print(percent_team_one, percent_team_two)
 		return percent_team_one, percent_team_two
 
 	def calculate_winning(self):
@@ -85,10 +102,6 @@ class DataAnalysis:
 		else:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
-		print('win1,win2')
-		print(self.win_1, self.win_2)
-		print('win_1, win_2')
-		print(percent_team_one, percent_team_two)
 		return percent_team_one, percent_team_two
 
 	def calculate_same_teams(self):
@@ -110,13 +123,6 @@ class DataAnalysis:
 		else:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
-		print('same_teams')
-		print(self.first_same_teams)
-		print(self.second_same_teams)
-		print(first_same_score)
-		print(second_same_score)
-		print('percent_team_one, percent_team_two')
-		print(percent_team_one, percent_team_two)
 		return percent_team_one, percent_team_two
 
 	@staticmethod

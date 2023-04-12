@@ -1,152 +1,99 @@
-import matplotlib
+import time
+
 import matplotlib.pyplot as plt
+import matplotlib.ticker
+from parsing.help_file import load_config_json
 matplotlib.use('QtAgg')
-FIG, AX = plt.subplots()
 
 
-def create_ratio_diagram(name1: str, name2: str, title: str, percent1: str, percent2: str, name: str):
-	path_name = name1 + '_vs_' + name2
-	teams = [name1, name2]
-	counts = [int(percent1.replace('%', '')), int(percent2.replace('%', ''))]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	AX.bar(teams, counts, label=bar_labels, color=bar_colors)
-	AX.set_facecolor('#132034')
-	AX.set_ylabel('Соотношение(%)')
-	AX.set_title(title)
-	AX.legend(title='Цвет команд')
-	plt.savefig(f'team_info/{path_name}/{name}.png')
+class DiagramsCreate:
+	def __init__(self, path, signal):
+		self.signal = signal
+		self.path = path
+		self.team_info_dict = load_config_json(self.path)
+		# ratio history
+		self.create_ratio_diagram(self.team_info_dict['percent_history_one'], self.team_info_dict['percent_history_two'], 'history_graphics', 'Соотношение истории игр команд')
+		self.signal.emit(35)
+		time.sleep(0.3)
+		# trend history
+		self.create_trend_diagram((self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_1']],(self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_2']], self.team_info_dict['history_time_zone_list'], 'history_trend_graphics', 'Тренд истории игр')
+		self.signal.emit(40)
+		time.sleep(0.3)
+		# ratio coefficient
+		self.create_ratio_diagram(self.team_info_dict['percent_coefficient_one'], self.team_info_dict['percent_coefficient_two'], 'coefficient_graphics', 'Соотношения коефициентов команд')
+		self.signal.emit(45)
+		time.sleep(0.3)
+		# ratio experience (not ready)
+		self.create_ratio_diagram(self.team_info_dict['percent_experience_1'], self.team_info_dict['percent_experience_2'], 'experience_graphics', 'Соотношение общего опыта команд\nза всё время')
+		self.signal.emit(50)
+		time.sleep(0.3)
+		# trend form team one
+		self.create_trend_diagram(self.team_info_dict['list_old_scores_one'], [], self.team_info_dict['list_timezone_old_score_one'], 'old_scores_trend_graphics_one', f'Тренд истории игр команды {self.team_info_dict["name_1"]}')
+		self.signal.emit(55)
+		time.sleep(0.3)
+		# trend form team two
+		self.create_trend_diagram([], self.team_info_dict['list_old_scores_two'], self.team_info_dict['list_timezone_old_score_two'], 'old_scores_trend_graphics_two', f'Тренд истории игр команды {self.team_info_dict["name_2"]}')
+		self.signal.emit(60)
+		time.sleep(0.3)
+		# ratio form
+		self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		self.signal.emit(65)
+		time.sleep(0.3)
+		# ratio winning form
+		self.create_ratio_diagram(self.team_info_dict['percent_team_one_old_scores_win'], self.team_info_dict['percent_team_two_old_scores_win'], 'old_scores_ratio_graphics_win', 'Соотношение форм команд\n(ПОБЕДЫ)')
+		self.signal.emit(70)
+		time.sleep(0.3)
+		# ratio losing form
+		self.create_ratio_diagram(self.team_info_dict['percent_team_two_old_scores_lose'], self.team_info_dict['percent_team_one_old_scores_lose'], 'old_scores_ratio_graphics_lose', 'Соотношение форм команд\n(ПОРАЖЕНИЯ)')
+		self.signal.emit(75)
+		# time.sleep(0.3)
+		# ratio same teams (WIN)
+		# self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		self.signal.emit(80)
+		# time.sleep(0.3)
+		# ratio same teams (LOSE)
+		# self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		self.signal.emit(85)
+		# time.sleep(0.3)
+		# ratio exodus
+		#self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
 
+	def create_ratio_diagram(self, percent_1, percent_2, name, title):
+		fig, ax = plt.subplots()
+		teams = [self.team_info_dict['name_1'], self.team_info_dict['name_2']]
+		counts = [int(percent_1.replace('%', '')), int(percent_2.replace('%', ''))]
+		bar_labels = [f'{self.team_info_dict["name_1"]}', f'{self.team_info_dict["name_2"]}']
+		bar_colors = ['tab:red', 'tab:blue']
+		ax.bar(teams, counts, label=bar_labels, color=bar_colors)
+		ax.tick_params(labelcolor='white')
+		fig.set_facecolor('#192B45')
+		ax.set_facecolor('#132034')
+		ax.set_ylabel('Соотношение(%)', color='white')
+		ax.set_title(title, color='white')
+		ax.legend(title='Цвет команд')
+		plt.savefig(f'{self.path}/{name}.png')
 
-def create_ratio_history_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Отношение истории игр команд')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_trend_history_diagram():
-	# split the data into two parts
-	xdata1 = [1, 5, 7, 8, 9, 14, 15, 17, 17, 19]
-	col_games = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-	# plot the data
-	fig = plt.figure()
-	ax = fig.add_subplot(1, 1, 1)
-	ax.plot(xdata1, color='tab:blue')
-	ax.plot(col_games, color='tab:orange')
-	ax.set_facecolor('xkcd:salmon')
-	ax.set_facecolor('#132034')
-	ax.set_title('Тенденция истории игр команд')
-	ax.set_ylabel('Победы')
-	ax.set_xlabel('Количество игр')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_coefficient_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Соотношения коефициентов команд')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_experience_teams_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Соотношение побед команд')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_form_team_diagram():
-	# for team one and team two
-	col_games = [0.01, 0.02, 0.03, 0.04, 0.05, 0.06, 0.07, 0.08, 0.09, 0.1,  0.11, 0.12, 0.13, 0.14, 0.15, 0.16, 0.17, 0.18, 0.19, 0.2, 0.21, 0.22]
-	exodus_games = [111, 110, 104, 100, 80, 90, 88, 80, 77, 70, 66, 60, 55, 50, 44, 40, 33, 30, 22, 20, 11, 1] # 22
-	fig, ax = plt.subplots()
-	ax.plot(col_games, exodus_games)
-	ax.set_xlim(0, col_games[-1])  # decreasing time
-	ax.set_xlabel('Количество игр')
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Количество побед')
-	ax.set_title('Команда name_team\n Тенденция побед команд по количеству игр. ')
-	ax.grid(True)
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_ratio_form_team_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Отношение форм команд')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_ratio_same_teams_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']  # team_1 --> base team. team_2 --> same team
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Отношение побед команд')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-def create_result_teams_diagram():
-	fig, ax = plt.subplots()
-	teams = ['name_team_1', 'name_team_2']  # team_1 --> base team. team_2 --> same team
-	counts = [20, 80]
-	bar_labels = ['red', 'blue']
-	bar_colors = ['tab:red', 'tab:blue']
-	ax.bar(teams, counts, label=bar_labels, color=bar_colors)
-	ax.set_facecolor('#132034')
-	ax.set_ylabel('Соотношение(%)')
-	ax.set_title('Общий результат')
-	ax.legend(title='Цвет команд')
-	plt.show()
-	# plt.savefig('saved_figure.png')
-
-
-#create_ratio_history_diagram()  # ratio
-#create_trend_history_diagram()
-#create_coefficient_diagram()  # ratio
-#create_experience_teams_diagram()  # ratio
-#create_form_team_diagram()
-#create_ratio_form_team_diagram()  # ratio
-#create_ratio_same_teams_diagram()  # ratio
-#create_result_teams_diagram()  # ratio
+	def create_trend_diagram(self, team_one_list, team_two_list, time_zone_list, name, title):
+		team_one_list.reverse()
+		team_two_list.reverse()
+		time_zone_list.reverse()
+		team_one = team_one_list
+		team_two = team_two_list
+		locator = matplotlib.ticker.FixedLocator([i for i in range(len(team_one if team_one != [] else team_two))])
+		# plot the data
+		fig = plt.figure()
+		ax = fig.add_subplot()
+		ax.xaxis.set_major_locator(locator)
+		formatter = matplotlib.ticker.FixedFormatter(time_zone_list)
+		ax.xaxis.set_major_formatter(formatter)
+		ax.plot(team_one, color='tab:red')
+		ax.plot(team_two, color='tab:blue')
+		ax.tick_params(labelcolor='white')
+		fig.set_facecolor('#192B45')
+		ax.set_facecolor('xkcd:salmon')
+		ax.tick_params(labelcolor='white')
+		ax.set_facecolor('#132034')
+		ax.set_title(f'{title}', color='white')
+		ax.set_ylabel('Победы', color='white')
+		ax.set_xlabel('')
+		plt.savefig(f'{self.path}/{name}.png')

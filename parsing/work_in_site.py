@@ -60,14 +60,11 @@ def create_directory_team(name_1, name_2):
 
 def download_img(url, name, path_main):
 	p = requests.get(url)
-	try:
-		try_to_open = open(r"{}\{}.jpg".format(path_main, name))
-		try_to_open.close()
-	except Exception as err:
-		print(err)
-		out = open(r"{}\{}.jpg".format(path_main, name), "wb")
-		out.write(p.content)
-		out.close()
+	try_to_open = open(r"{}\{}.jpg".format(path_main, name))
+	try_to_open.close()
+	out = open(r"{}\{}.jpg".format(path_main, name), "wb")
+	out.write(p.content)
+	out.close()
 
 
 class WorkInSite(Connect):
@@ -83,16 +80,19 @@ class WorkInSite(Connect):
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			raise ValueError
 		self.check_game()
-		self.history_score_dict = self.find_history_tvt()
+		self.history_score_dict, self.trend_score_dict, self.time_zone_history_list = self.find_history_tvt(self.name_1, self.name_2)
 		self.best_of_number = self.find_best_of()
 		self.coefficient_dict = self.find_coefficient_on_bookmaker()
-		self.dict_old_scores = self.find_form_teams()
-		self.win_1, self.win_2 = self.find_experience()  # number of team wins
+		self.dict_old_scores, self.list_old_scores_one, self.list_old_scores_two, self.list_timezone_old_score_one, self.list_timezone_old_score_two, self.team_one_old_scores_win, self.team_one_old_scores_lose, self.team_two_old_scores_win, self.team_two_old_scores_lose = self.find_form_teams()
+		self.win_1, self.win_2, self.percent_1, self.percent_2 = self.find_experience()  # number of team wins
 		self.find_same_teams()  # first_same_dict, second_same_dict
 		try:
 			self.team_info_dict_fill()
 		except Exception as err:
 			print(err)
+
+	def ret_path(self):
+		return self.path
 
 	def team_info_dict_fill(self):
 		self.team_info_dict['title'] = self.title if not None else 0
@@ -102,11 +102,23 @@ class WorkInSite(Connect):
 		self.team_info_dict['img_url_2'] = self.img_url_2 if not None else 0
 		self.team_info_dict['path_on_disc'] = self.path if not None else 0
 		self.team_info_dict['history_score_dict'] = self.history_score_dict if not None else 0
+		self.team_info_dict['history_trend_dict'] = self.trend_score_dict if not None else 0
+		self.team_info_dict['history_time_zone_list'] = self.time_zone_history_list if not None else 0
 		self.team_info_dict['best_of_number'] = self.best_of_number if not None else 0
 		self.team_info_dict['coefficient_dict'] = self.coefficient_dict if not None else 0
 		self.team_info_dict['dict_old_scores'] = self.dict_old_scores if not None else 0
 		self.team_info_dict['win_1'] = self.win_1 if not None else 0
 		self.team_info_dict['win_2'] = self.win_2 if not None else 0
+		self.team_info_dict['percent_win_1'] = self.percent_1 if not None else 0
+		self.team_info_dict['percent_win_2'] = self.percent_2 if not None else 0
+		self.team_info_dict['list_old_scores_one'] = self.list_old_scores_one if not None else 0
+		self.team_info_dict['list_old_scores_two'] = self.list_old_scores_two if not None else 0
+		self.team_info_dict['team_one_old_scores_win'] = self.team_one_old_scores_win if not None else 0
+		self.team_info_dict['team_one_old_scores_lose'] = self.team_one_old_scores_lose if not None else 0
+		self.team_info_dict['team_two_old_scores_win'] = self.team_two_old_scores_win if not None else 0
+		self.team_info_dict['team_two_old_scores_lose'] = self.team_two_old_scores_lose if not None else 0
+		self.team_info_dict['list_timezone_old_score_one'] = self.list_timezone_old_score_one if not None else 0
+		self.team_info_dict['list_timezone_old_score_two'] = self.list_timezone_old_score_two if not None else 0
 		self.save_parse_info_on_js()
 
 	def save_parse_info_on_js(self):
@@ -132,16 +144,19 @@ class WorkInSite(Connect):
 		url_img_2 = DOM + self.redy_soup.find(class_='mop2').find(class_='mteamlogo').find('img').get('src')
 		return url_img_1, url_img_2
 
-	def find_history_tvt(self):
+	def find_history_tvt(self, name_1, name_2):
 		"""
 		def for find history team vs team
 		:return: dict with account and name OR None if no history
 		"""
 		score_dict = {self.name_1: 0, self.name_2: 0}
+		trend_score_dict = {self.name_1: [], self.name_2: []}
+		time_zone_list = []
 		try:
 			history_url = DOM + str(self.redy_soup.find(class_='btn btn-xs btn-default pull-right').get('href'))
 		except AttributeError:
-			return
+			return {f'{name_1}': [0], f'{name_2}': [0]},\
+				{f'{name_1}': [0], f'{name_2}': [0]}, ['0']
 		history_soup = self.try_to_connect(history_url)
 		tr_all = history_soup.find(class_='table-responsive').find_all('tr')
 		for i in tr_all:
@@ -156,13 +171,16 @@ class WorkInSite(Connect):
 			score_1, score_2 = score.split(' : ')
 			date = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			year, month, day = date[0], date[1], date[2]
+			time_zone_list.append(f'{month}\n{year[-2]}{year[-1]}')
 			date_time = translate_to_datatime(year=int(year), month=int(month), day=int(day))
 			delta = date_time - NOW_time
 			# if the event happened less than 3 months ago(89 days)
+			trend_score_dict[name_1].append(int(score_1))
+			trend_score_dict[name_2].append(int(score_2))
 			if delta.days >= -89:
 				score_dict[name_1] += int(score_1)
 				score_dict[name_2] += int(score_2)
-		return score_dict
+		return score_dict, trend_score_dict, time_zone_list
 
 	def find_best_of(self):
 		"""
@@ -197,6 +215,14 @@ class WorkInSite(Connect):
 		which form at team
 		:return:dict_scores
 		"""
+		team_one_old_scores = []
+		team_one_old_scores_time_zone = []
+		team_one_old_scores_win = []
+		team_one_old_scores_lose = []
+		team_two_old_scores = []
+		team_two_old_scores_time_zone = []
+		team_two_old_scores_win = []
+		team_two_old_scores_lose = []
 		dict_scores = {self.name_1: 0, self.name_2: 0}
 		href_1, href_2 = self.redy_soup.find_all(class_='mteamname')
 		href_1 = DOM + href_1.find('a').get('href')
@@ -209,14 +235,25 @@ class WorkInSite(Connect):
 			name_1_2 = i.find_next(class_='teamname c2').text.strip()
 			year_1, month_1, day_1 = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			delta_1 = translate_to_datatime(year=int(year_1), month=int(month_1), day=int(day_1)) - NOW_time
-			if delta_1.days >= -70:
+			if delta_1.days >= -90:
 				score_1, score_2 = i.find_next(class_='vs').find_next('span').get('data-score').split(' : ')
 				score_1, score_2 = int(score_1.replace('*', '')), int(score_2.replace('*', ''))
 				self.add_names_to_dict(1, name_1_1, name_1_2, score_1, score_2)
 				try:
 					dict_scores[name_1_1] += score_1
+					team_one_old_scores.append(score_1)
+					if score_1 > score_2:
+						team_one_old_scores_win.append(score_1)
+					else:
+						team_one_old_scores_lose.append(score_2)
 				except KeyError:
 					dict_scores[name_1_2] += score_2
+					team_one_old_scores.append(score_2)
+					if score_2 > score_1:
+						team_one_old_scores_win.append(score_2)
+					else:
+						team_one_old_scores_lose.append(score_1)
+				team_one_old_scores_time_zone.append(f'{month_1}\n{year_1[-2]}{year_1[-1]}')
 		# ----------------------
 		ready_soup_url_2 = self.try_to_connect(href_2)
 		box_before = ready_soup_url_2.find_all(class_='box clearfix')[1]
@@ -226,15 +263,26 @@ class WorkInSite(Connect):
 			name_2_2 = i.find_next(class_='teamname c2').text.strip()
 			year_2, month_2, day_2 = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			delta_2 = translate_to_datatime(year=int(year_2), month=int(month_2), day=int(day_2)) - NOW_time
-			if delta_2.days >= -70:
+			if delta_2.days >= -90:
 				score_1, score_2 = i.find_next(class_='vs').find_next('span').get('data-score').split(' : ')
 				score_1, score_2 = int(score_1.replace('*', '')), int(score_2.replace('*', ''))
 				self.add_names_to_dict(2, name_2_1, name_2_2, score_1, score_2)
 				try:
 					dict_scores[name_2_1] += score_1
+					team_two_old_scores.append(score_1)
+					if score_1 > score_2:
+						team_two_old_scores_win.append(score_1)
+					else:
+						team_two_old_scores_lose.append(score_2)
 				except KeyError:
 					dict_scores[name_2_2] += score_2
-		return dict_scores
+					team_two_old_scores.append(score_2)
+					if score_2 > score_1:
+						team_two_old_scores_win.append(score_2)
+					else:
+						team_two_old_scores_lose.append(score_1)
+				team_two_old_scores_time_zone.append(f'{month_2}\n{year_2[-2]}{year_2[-1]}')
+		return dict_scores, team_one_old_scores, team_two_old_scores, team_one_old_scores_time_zone, team_two_old_scores_time_zone, team_one_old_scores_win, team_one_old_scores_lose, team_two_old_scores_win, team_two_old_scores_lose
 
 	def find_experience(self):
 		"""
@@ -246,19 +294,20 @@ class WorkInSite(Connect):
 		ready_soup_url_1 = self.try_to_connect(href_1)
 		try:
 			winn_1 = ready_soup_url_1.find_all(class_='col col-xs-3')[-1].text.split(' ')[1]
+			percent_1 = ready_soup_url_1.find_all(class_='col col-xs-3')[-1].text.split(' ')[-1]
 		except IndexError:
 			winn_1 = 0
+			percent_1 = 0
 		# -------------------------
 		href_2 = DOM + href_2.find('a').get('href')
 		ready_soup_url_2 = self.try_to_connect(href_2)
 		try:
 			winn_2 = ready_soup_url_2.find_all(class_='col col-xs-3')[-1].text.split(' ')[1]
+			percent_2 = ready_soup_url_2.find_all(class_='col col-xs-3')[-1].text.split(' ')[-1]
 		except IndexError:
 			winn_2 = 0
-		return winn_1, winn_2
-
-	def ret_all_value(self):
-		return self.name_1, self.name_2, self.history_score_dict, self.best_of_number, self.coefficient_dict, self.dict_old_scores, self.win_1, self.win_2
+			percent_2 = 0
+		return winn_1, winn_2, percent_1, percent_2
 
 	@staticmethod
 	def find_same_teams():
