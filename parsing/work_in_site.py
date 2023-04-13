@@ -135,8 +135,8 @@ class WorkInSite(Connect):
 		time_date, time = self.redy_soup.find(class_='stage-time').find('time').get('datetime').split('T')
 		year, month, day = time_date.split('-')
 		hour, minute = time.split(":")
-		# hour - 1(website operation specification)
-		time_g = translate_to_datatime(year=int(year), month=int(month), day=int(day), hour=int(hour)+1, minute=int(minute))
+		# hour + 2(website operation specification)
+		time_g = translate_to_datatime(year=int(year), month=int(month), day=int(day), hour=int(hour)+2, minute=int(minute))
 		if time_g < NOW_time:
 			print('This game is played')
 			raise ValueError
