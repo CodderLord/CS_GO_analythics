@@ -5,7 +5,7 @@ from PyQt6 import uic
 from parsing.help_file import load_config_json
 import json
 
-from PyQt6.QtGui import QIcon, QPixmap, QTransform
+from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie
 from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QVBoxLayout, QDialog, QWidget
 from multi_threading.q_thread_worker import ThreadLogic
 
@@ -36,7 +36,7 @@ class LinkInputWindow(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.work_in_thread = None
-		self.window = uic.loadUi('qt/uis/first_window.ui', self)
+		self.window = uic.loadUi('qt/uis/first_window_try.ui', self)
 		self.progressbar_window = WindowPB(self.window)
 		self.window.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
 		self.window.setWindowTitle('CS-GO Analytics')
