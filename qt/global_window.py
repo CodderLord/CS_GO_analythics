@@ -1,35 +1,12 @@
 #!/bin/env python3
 # coding: utf-8
 
-from PyQt6 import uic
+from PyQt6 import uic, QtWidgets
 from parsing.help_file import load_config_json
-import json
 
 from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QVBoxLayout, QDialog, QWidget
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton, QWidget
 from multi_threading.q_thread_worker import ThreadLogic
-
-
-class WindowPB(QDialog):
-	def __init__(self, window):
-		super().__init__(window)
-		self.window = window
-		self.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
-		self.setWindowTitle("Загрузка")
-		self.setGeometry(500, 200, 300, 100)
-		vbox = QVBoxLayout()
-		self.progressbar = QProgressBar()
-		self.progressbar.setMaximum(0)
-		self.progressbar.setMaximum(100)
-		self.progressbar.setTextVisible(False)
-		self.progressbar.setStyleSheet("QProgre"
-		                               "ssBar {border: 2px solid grey;border-radius:2px;padding:1px}"
-		                               "QProgressBar::chunk {background:rgb(255, 255, 255)}")
-		vbox.addWidget(self.progressbar)
-		self.setLayout(vbox)
-
-	def upp_value(self, value):
-		self.progressbar.setValue(value)
 
 
 class LinkInputWindow(QWidget):
@@ -37,10 +14,31 @@ class LinkInputWindow(QWidget):
 		super().__init__()
 		self.work_in_thread = None
 		self.window = uic.loadUi('qt/uis/first_window_try.ui', self)
-		self.progressbar_window = WindowPB(self.window)
+		self.progress_bar = QProgressBar(self)
+		self.progress_bar.setGeometry(20, 520, 900, 40)
+		self.progress_bar.setMinimum(0)
+		self.progress_bar.setMaximum(100)
+		self.progress_bar.setHidden(True)
+		self.progress_bar.setTextVisible(False)
+		self.progress_bar.setStyleSheet("QProgre"
+		                               "ssBar {border: 2px solid grey;border-radius:2px;padding:1px}"
+		                               "QProgressBar::chunk {background:rgb(255, 255, 255)}")
 		self.window.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
 		self.window.setWindowTitle('CS-GO Analytics')
 		self.window.next_button.clicked.connect(self.take_link)
+		self.window.cancel_progress_button = QPushButton(self)
+		self.window.cancel_progress_button.setGeometry(422, 580, 93, 28)
+		self.window.cancel_progress_button.setText('Отмена')
+		self.window.cancel_progress_button.setStyleSheet('color: rgb(255, 255, 255);')
+		self.window.cancel_progress_button.setHidden(True)
+		self.movie_1 = QMovie("qt/anims/OG.gif")
+		self.movie_2 = QMovie("qt/anims/NAVI.gif")
+		self.movie_3 = QMovie("qt/anims/ENCE.gif")
+		self.movie_4 = QMovie("qt/anims/VITALITY.gif")
+		self.window.first_movie.setMovie(self.movie_1)
+		self.window.second_movie.setMovie(self.movie_2)
+		self.window.third_movie.setMovie(self.movie_3)
+		self.window.four_movie.setMovie(self.movie_4)
 		self.window.show()
 
 	def take_link(self):
@@ -54,9 +52,16 @@ class LinkInputWindow(QWidget):
 			error.exec()
 		else:
 			try:
-				self.window.hide()
-				self.progressbar_window.show()
+				self.window.next_button.hide()
+				self.input_link.hide()
+				self.progress_bar.setHidden(False)
+				self.window.cancel_progress_button.setHidden(False)
+				self.window.tabWidgets.hide()
 				self.start_work_in_site(link)
+				self.movie_1.start()
+				self.movie_2.start()
+				self.movie_3.start()
+				self.movie_4.start()
 			except ValueError:
 				error = QMessageBox()
 				error.setWindowTitle('Ошибка работы с матчем')
@@ -68,13 +73,15 @@ class LinkInputWindow(QWidget):
 
 	def start_work_in_site(self, link):
 		self.work_in_thread = ThreadLogic(link)
-		self.work_in_thread.progress_bar_signal.connect(self.progressbar_window.upp_value)
+		self.work_in_thread.progress_bar_signal.connect(self.upp_value)
 		self.work_in_thread.finished_signal.connect(self.after_finish)
 		self.work_in_thread.start()
 
+	def upp_value(self, value):
+		self.progress_bar.setValue(value)
+
 	def after_finish(self, path):
 		self.close()
-		self.progressbar_window.close()
 		UI(path)
 
 
@@ -87,6 +94,8 @@ class UI(QMainWindow):
 		self.transform.translate(500, 500)
 		self.transform.rotate(450)
 		self.transform.scale(0.5, 1.0)
+		self.window.team_tabs.setDocumentMode(True)
+		self.window.team_tabs.setMovable(True)
 		self.window.setWindowIcon(QIcon('qt/icons/data-analytics-CSGO.ico'))
 		self.set_basis_info_tab()
 		self.set_history_tab()
