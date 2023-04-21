@@ -17,10 +17,16 @@ class DataAnalysis:
 		self.best_of_number: int = self.dict_team_info['best_of_number']  # number of best (bo1, bo2, bo3, bo5)
 		self.coefficient_dict: dict = self.dict_team_info['coefficient_dict']  # coefficient on bookmakers
 		self.dict_old_scores: dict = self.dict_team_info['dict_old_scores']   # dict which have team names(self.name_1, self.name_2) and their scores
-		self.win_1: int = int(str(self.dict_team_info['win_1']).replace('-', '0'))  # score of winning team
-		self.win_2: int = int(str(self.dict_team_info['win_2']).replace('-', '0'))
-		self.percent_win_1 = int(str(self.dict_team_info['percent_win_1']).replace('%', '')) if not 0 else 0
-		self.percent_win_2 = int(str(self.dict_team_info['percent_win_2']).replace('%', '')) if not 0 else 0
+		self.win_1: int = int(str(self.dict_team_info['win_1']).replace('–', '0'))  # score of winning team
+		self.win_2: int = int(str(self.dict_team_info['win_2']).replace('–', '0'))  # score of winning team
+		try:
+			self.percent_win_1 = int(str(self.dict_team_info['percent_win_1']).replace('%', ''))
+		except ValueError as err:
+			self.percent_win_1 = 0
+		try:
+			self.percent_win_2 = int(str(self.dict_team_info['percent_win_2']).replace('%', ''))
+		except ValueError:
+			self.percent_win_2 = 0
 		self.percent_one_team_old_win = self.dict_team_info['team_one_old_scores_win']
 		self.percent_one_team_old_lose = self.dict_team_info['team_one_old_scores_lose']
 		self.percent_two_team_old_win = self.dict_team_info['team_two_old_scores_win']
@@ -30,14 +36,29 @@ class DataAnalysis:
 		self.experience_1, self.experience_2 = self.calculate_all_wins()
 		# -------------------------------------------
 		self.dict_team_info['experience_1'], self.dict_team_info['experience_2'] = self.experience_1, self.experience_2
-		self.dict_team_info['percent_experience_1'], self.dict_team_info['percent_experience_2'] = self.calculate_percents_experience()
-		self.dict_team_info['percent_history_one'], self.dict_team_info['percent_history_two'] = self.calculate_history_score()
-		self.dict_team_info['percent_coefficient_one'], self.dict_team_info['percent_coefficient_two'] = self.calculate_coefficient()
+		self.dict_team_info['percent_experience_1'], self.dict_team_info['percent_experience_2'] =\
+			self.calculate_percents_experience()
+		self.dict_team_info['percent_history_one'], self.dict_team_info['percent_history_two'] =\
+			self.calculate_history_score()
+		self.dict_team_info['percent_coefficient_one'], self.dict_team_info['percent_coefficient_two'] =\
+			self.calculate_coefficient()
 		self.dict_team_info['percent_form_one'], self.dict_team_info['percent_form_two'] = self.calculate_old_scores()
 		self.dict_team_info['percent_winning_one'], self.dict_team_info['percent_winning_two'] = self.calculate_winning()
 		self.dict_team_info['percent_same_one'], self.dict_team_info['percent_same_two'] = self.calculate_same_teams()
-		self.dict_team_info['percent_team_one_old_scores_win'], self.dict_team_info['percent_team_two_old_scores_win'] = self.calculate_percents(sum(self.percent_one_team_old_win), sum(self.percent_two_team_old_win))
-		self.dict_team_info['percent_team_one_old_scores_lose'], self.dict_team_info['percent_team_two_old_scores_lose'] = self.calculate_percents(sum(self.percent_one_team_old_lose), sum(self.percent_two_team_old_lose))
+		self.dict_team_info['percent_team_one_old_scores_win'], self.dict_team_info['percent_team_two_old_scores_win'] =\
+			self.calculate_percents(sum(self.percent_one_team_old_win), sum(self.percent_two_team_old_win))
+		self.dict_team_info['percent_team_one_old_scores_lose'], self.dict_team_info['percent_team_two_old_scores_lose'] =\
+			self.calculate_percents(sum(self.percent_one_team_old_lose), sum(self.percent_two_team_old_lose))
+		self.dict_team_info['first_same_dict'], self.dict_team_info['second_same_dict'] =\
+			self.first_same_teams, self.second_same_teams
+		self.first_lose_team_score, self.second_lose_team_score, self.first_win_team_score,\
+			self.second_win_team_score = self.calculate_sames_scores()
+		self.dict_team_info['team_one_win'], self.dict_team_info['team_two_win'],\
+			self.dict_team_info['team_one_lose'], self.dict_team_info['team_two_lose'] =\
+			self.first_win_team_score,self.second_win_team_score, self.first_lose_team_score, self.second_lose_team_score
+		self.dict_team_info['same_teams_scores'] =\
+			self.calculate_percents(self.first_win_team_score, self.second_win_team_score),\
+			self.calculate_percents(self.second_lose_team_score, self.first_lose_team_score)
 		save_info_team_dict(self.dict_team_info['path_on_disc'], self.dict_team_info)
 
 	def calculate_percents_experience(self):
@@ -48,8 +69,14 @@ class DataAnalysis:
 		return str(percent_experience_1)+'%', str(percent_experience_2)+'%'
 
 	def calculate_all_wins(self):
-		all_win_1 = int((self.win_1 / self.percent_win_1) * 100)
-		all_win_2 = int((self.win_2 / self.percent_win_2) * 100)
+		try:
+			all_win_1 = int((self.win_1 / self.percent_win_1) * 100)
+		except ZeroDivisionError:
+			all_win_1 = 0
+		try:
+			all_win_2 = int((self.win_2 / self.percent_win_2) * 100)
+		except ZeroDivisionError:
+			all_win_2 = 0
 		return all_win_1, all_win_2
 
 	def calculate_history_score(self):
@@ -124,6 +151,23 @@ class DataAnalysis:
 			percent_team_one = '50%'
 			percent_team_two = '50%'
 		return percent_team_one, percent_team_two
+
+	def calculate_sames_scores(self):
+		names_teams = self.first_same_teams.keys()
+		first_win_team_score: int = 0
+		second_win_team_score: int = 0
+		first_lose_team_score: int = 0
+		second_lose_team_score: int = 0
+		for i in names_teams:
+			first_score_team_one = self.first_same_teams[i][0]
+			first_score_team_two = self.first_same_teams[i][-1]
+			second_score_team_one = self.second_same_teams[i][0]
+			second_score_team_two = self.second_same_teams[i][-1]
+			first_lose_team_score += int(first_score_team_one)
+			second_lose_team_score += int(first_score_team_two)
+			first_win_team_score += int(second_score_team_one)
+			second_win_team_score += int(second_score_team_two)
+		return first_lose_team_score, second_lose_team_score, first_win_team_score, second_win_team_score
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):

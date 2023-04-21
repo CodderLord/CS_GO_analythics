@@ -1232,8 +1232,18 @@ border: rgb(25, 43, 69);</string>
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout_23">
+           <item row="1" column="0">
+            <widget class="QLabel" name="first_team_win">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Первая команда победила 1 раз&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="same_team_one_graphics">
+            <widget class="QLabel" name="same_team_win_graphics">
              <property name="minimumSize">
               <size>
                <width>650</width>
@@ -1251,13 +1261,23 @@ border: rgb(25, 43, 69);</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="label_same_team_one">
              <property name="styleSheet">
               <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Отношение встреч с одинаковыми командами &lt;br/&gt;(ПОБЕДЫ)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="second_team_win">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Вторая команда победила 1 раз&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
@@ -1286,8 +1306,18 @@ border: rgb(25, 43, 69);</string>
            <string/>
           </property>
           <layout class="QGridLayout" name="gridLayout_24">
+           <item row="1" column="0">
+            <widget class="QLabel" name="first_team_lose">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Первая команда проиграла 1 раз&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
            <item row="0" column="0">
-            <widget class="QLabel" name="same_team_two_graphics">
+            <widget class="QLabel" name="same_team_lose_graphics">
              <property name="minimumSize">
               <size>
                <width>650</width>
@@ -1305,13 +1335,23 @@ border: rgb(25, 43, 69);</string>
              </property>
             </widget>
            </item>
-           <item row="1" column="0">
+           <item row="3" column="0">
             <widget class="QLabel" name="label_same_team_two">
              <property name="styleSheet">
               <string notr="true">color: rgb(255, 255, 255);</string>
              </property>
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Отношение встреч с одинаковыми командами &lt;br/&gt;(ПОРАЖЕНИЯ)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="second_team_lose">
+             <property name="styleSheet">
+              <string notr="true">color: rgb(255, 255, 255);</string>
+             </property>
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Вторая команда проиграла 1 раз&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>

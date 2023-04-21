@@ -137,7 +137,8 @@ color: rgb(255, 255, 255);
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_input">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(25, 43, 69);</string>
+        <string notr="true">background-color: rgb(25, 43, 69);
+border: 1px;</string>
        </property>
        <property name="title">
         <string/>
@@ -222,6 +223,12 @@ border:rgb(19, 32, 52);</string>
         </item>
         <item row="6" column="0" alignment="Qt::AlignHCenter">
          <widget class="QPushButton" name="next_button">
+          <property name="minimumSize">
+           <size>
+            <width>60</width>
+            <height>25</height>
+           </size>
+          </property>
           <property name="styleSheet">
            <string notr="true">color: rgb(255, 255, 255);
 background-color: rgb(19, 32, 52);</string>
@@ -244,7 +251,8 @@ background-color: rgb(19, 32, 52);</string>
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_2">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(25, 43, 69);</string>
+        <string notr="true">background-color: rgb(25, 43, 69);
+border: 1px;</string>
        </property>
        <property name="title">
         <string/>
@@ -261,7 +269,8 @@ background-color: rgb(19, 32, 52);</string>
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_3">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(25, 43, 69);</string>
+        <string notr="true">background-color: rgb(25, 43, 69);
+border: 1px;</string>
        </property>
        <property name="title">
         <string/>
@@ -278,7 +287,8 @@ background-color: rgb(19, 32, 52);</string>
      <item row="0" column="0">
       <widget class="QGroupBox" name="groupBox_4">
        <property name="styleSheet">
-        <string notr="true">background-color: rgb(25, 43, 69);</string>
+        <string notr="true">background-color: rgb(25, 43, 69);
+border: 1px;</string>
        </property>
        <property name="title">
         <string/>
@@ -288,6 +298,25 @@ background-color: rgb(19, 32, 52);</string>
     </layout>
    </widget>
   </widget>
+  <widget class="QLabel" name="help_label">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>951</width>
+     <height>641</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <zorder>third_movie</zorder>
+  <zorder>second_movie</zorder>
+  <zorder>four_movie</zorder>
+  <zorder>first_movie</zorder>
+  <zorder>help_label</zorder>
+  <zorder>tabWidgets</zorder>
  </widget>
  <resources/>
  <connections/>

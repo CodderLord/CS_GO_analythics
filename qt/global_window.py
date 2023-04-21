@@ -29,7 +29,7 @@ class LinkInputWindow(QWidget):
 		self.window.cancel_progress_button = QPushButton(self)
 		self.window.cancel_progress_button.setGeometry(422, 580, 93, 28)
 		self.window.cancel_progress_button.setText('Отмена')
-		self.window.cancel_progress_button.setStyleSheet('color: rgb(255, 255, 255);')
+		self.window.cancel_progress_button.setStyleSheet('color: rgb(255, 255, 255); background-color: rgb(25, 43, 69);')
 		self.window.cancel_progress_button.setHidden(True)
 		self.movie_1 = QMovie("qt/anims/OG.gif")
 		self.movie_2 = QMovie("qt/anims/NAVI.gif")
@@ -39,6 +39,10 @@ class LinkInputWindow(QWidget):
 		self.window.second_movie.setMovie(self.movie_2)
 		self.window.third_movie.setMovie(self.movie_3)
 		self.window.four_movie.setMovie(self.movie_4)
+		self.window.first_movie.setStyleSheet("border: 3px solid black;")
+		self.window.second_movie.setStyleSheet("border: 3px solid black;")
+		self.window.third_movie.setStyleSheet("border: 3px solid black;")
+		self.window.four_movie.setStyleSheet("border: 3px solid black;")
 		self.window.show()
 
 	def take_link(self):
@@ -53,6 +57,7 @@ class LinkInputWindow(QWidget):
 		else:
 			try:
 				self.window.next_button.hide()
+				self.window.help_label.setHidden(True)
 				self.input_link.hide()
 				self.progress_bar.setHidden(False)
 				self.window.cancel_progress_button.setHidden(False)
@@ -101,7 +106,8 @@ class UI(QMainWindow):
 		self.set_history_tab()
 		self.set_coefficient_tab()
 		self.set_old_scores_tab()
-		self.set_ratio_old_scores_tab()
+		self.set_old_ratio_scores_tab()
+		self.set_same_teams_scores_tab()
 		self.window.show()
 
 	def set_basis_info_tab(self):
@@ -143,7 +149,7 @@ class UI(QMainWindow):
 			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Всего была сыгранно {len(self.dict_team_info["list_old_scores_two"])} игр за последних 3 месяца</span></p></body></html>')
 		self.window.form_team_label_two.adjustSize()
 
-	def set_ratio_old_scores_tab(self):
+	def set_old_ratio_scores_tab(self):
 		self.window.ratio_form_wins_graphics.setPixmap(
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/old_scores_ratio_graphics_win.png'))
 		self.window.ratio_form_lose_graphics.setPixmap(
@@ -160,3 +166,18 @@ class UI(QMainWindow):
 		self.window.info_label_wins_team_2_old_scores.adjustSize()
 		self.window.info_label_loses_team_1_old_scores.adjustSize()
 		self.window.info_label_loses_team_2_old_scores.adjustSize()
+
+	def set_same_teams_scores_tab(self):
+		self.window.same_team_win_graphics.setPixmap(
+			QPixmap(f'{self.dict_team_info["path_on_disc"]}/same_win_graphics.png'))
+		self.window.same_team_lose_graphics.setPixmap(
+			QPixmap(f'{self.dict_team_info["path_on_disc"]}/same_lose_graphics.png'))
+		self.window.first_team_win.setText(
+			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_1"]} команда победила {self.dict_team_info["team_one_win"]} раз</span></p></body></html>')
+		self.window.second_team_win.setText(
+			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_2"]} команда победила {self.dict_team_info["team_two_win"]} раз</span></p></body></html>')
+		self.window.first_team_lose.setText(
+			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_1"]} команда проиграла {self.dict_team_info["team_one_lose"]} раз</span></p></body></html>')
+		self.window.second_team_lose.setText(
+			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_2"]} команда проиграла {self.dict_team_info["team_two_lose"]} раз</span></p></body></html>')
+

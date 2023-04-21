@@ -46,13 +46,16 @@ class DiagramsCreate:
 		# ratio losing form
 		self.create_ratio_diagram(self.team_info_dict['percent_team_two_old_scores_lose'], self.team_info_dict['percent_team_one_old_scores_lose'], 'old_scores_ratio_graphics_lose', 'Соотношение форм команд\n(ПОРАЖЕНИЯ)')
 		self.signal.emit(75)
-		# time.sleep(0.3)
+		time.sleep(0.3)
 		# ratio same teams (WIN)
-		# self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		print(self.team_info_dict['same_teams_scores'])
+		(first_win, second_win), (first_lose, second_lose) = self.team_info_dict['same_teams_scores']
+		print(first_win, second_win, first_lose, second_lose)
+		self.create_ratio_diagram(first_win, second_win, 'same_win_graphics', 'Соотношение побед команд \nв игре с одинаковыми командами')
 		self.signal.emit(80)
-		# time.sleep(0.3)
+		time.sleep(0.3)
 		# ratio same teams (LOSE)
-		# self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		self.create_ratio_diagram(first_lose, second_lose, 'same_lose_graphics', 'Соотношение поражений команд \nв игре с одинаковыми командами')
 		self.signal.emit(85)
 		# time.sleep(0.3)
 		# ratio exodus

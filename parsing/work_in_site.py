@@ -90,7 +90,7 @@ class WorkInSite(Connect):
 		self.find_same_teams()  # first_same_dict, second_same_dict
 		try:
 			self.team_info_dict_fill()
-		except Exception as err:
+		except Exception as err: 
 			print(err)
 
 	def ret_path(self):
@@ -142,8 +142,16 @@ class WorkInSite(Connect):
 			raise ValueError
 
 	def find_img(self):
-		url_img_1 = DOM + self.redy_soup.find(class_='mop1').find(class_='mteamlogo').find('img').get('src')
-		url_img_2 = DOM + self.redy_soup.find(class_='mop2').find(class_='mteamlogo').find('img').get('src')
+		try:
+			url_img_1 = DOM + self.redy_soup.find(class_='mop1').find(class_='mteamlogo').find('img').get('src')
+		except AttributeError:
+			print('sss1')
+			url_img_1 = DOM + self.redy_soup.find(class_='mop1').find(class_='mteamlogo').get('src')
+		try:
+			url_img_2 = DOM + self.redy_soup.find(class_='mop2').find(class_='mteamlogo').find('img').get('src')
+		except AttributeError:
+			print('sss2')
+			url_img_2 = DOM + self.redy_soup.find(class_='mop2').find(class_='mteamlogo').get('src')
 		return url_img_1, url_img_2
 
 	def find_history_tvt(self, name_1, name_2):
@@ -171,6 +179,8 @@ class WorkInSite(Connect):
 			except IndexError:
 				score = score_list[0]
 			score_1, score_2 = score.split(' : ')
+			score_1 = score_1.replace('*', '')
+			score_2 = score_2.replace('*', '')
 			date = i.find_next(class_='sct').get('data-time').split(' ')[0].split('-')
 			year, month, day = date[0], date[1], date[2]
 			time_zone_list.append(f'{month}\n{year[-2]}{year[-1]}')
