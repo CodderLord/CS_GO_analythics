@@ -1,19 +1,21 @@
 #!/bin/env python3
 # coding: utf-8
 
-from PyQt6 import uic, QtWidgets
+from PyQt6 import uic
 from parsing.help_file import load_config_json
 
-from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie
+from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie, QFont
 from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton, QWidget
 from multi_threading.q_thread_worker import ThreadLogic
+
+from parsing.work_in_site import Connect
 
 
 class LinkInputWindow(QWidget):
 	def __init__(self):
 		super().__init__()
 		self.work_in_thread = None
-		self.window = uic.loadUi('qt/uis/first_window_try.ui', self)
+		self.window = uic.loadUi('qt/uis/first_window.ui', self)
 		self.progress_bar = QProgressBar(self)
 		self.progress_bar.setGeometry(20, 520, 900, 40)
 		self.progress_bar.setMinimum(0)
@@ -43,7 +45,59 @@ class LinkInputWindow(QWidget):
 		self.window.second_movie.setStyleSheet("border: 3px solid black;")
 		self.window.third_movie.setStyleSheet("border: 3px solid black;")
 		self.window.four_movie.setStyleSheet("border: 3px solid black;")
+		self.window.list_futures.setStyleSheet("color: rgb(255, 255, 255);")
+		self.name_link_exodus = {}
+		font = QFont()
+		font.setFamily("Open Sans")
+		font.setPointSize(20)
+		self.window.list_futures.setFont(font)
+		self.list_funders()
 		self.window.show()
+
+	def list_funders(self):
+		name_ing = []
+		coefficient_1 = []
+		coefficient_2 = []
+		time_zone = []
+		exodus_list = []
+		link_list = []
+		con = Connect('https://game-tournaments.com/csgo')
+		tab = con.try_to_connect('https://game-tournaments.com/csgo')
+		tab = tab.find(class_='matches table table-striped table-hover').find_all('tr')
+		a = 0
+		first_ = True
+		for i in tab:
+			try_mliv = i.find_next(class_='mlive')
+			a += 1
+			# if don`t use that -> first match is played
+			if try_mliv is None:
+				if first_ is not False and a > 1:
+					first_ = False
+					continue
+				title = i.find_next(class_='mlink').get('title').strip()
+				name_ing.append(title)
+				bet_coefficient_1 = i.find_next(class_='bet-percentage bet1').text.strip() \
+					if i.find_next(class_='bet-percentage bet1') is not None else ''
+				coefficient_1.append(bet_coefficient_1)
+				bet_coefficient_2 = i.find_next(class_='bet-percentage bet2').text.strip() \
+					if i.find_next(class_='bet-percentage bet1') is not None else ''
+				coefficient_2.append(bet_coefficient_2)
+				time_to_start = i.find_next(class_='live-in').text.strip()
+				time_zone.append(time_to_start)
+				link = 'https://game-tournaments.com/' + i.find_next('a').find_next(class_='mlink').get('href')
+				link_list.append(link)
+		a = 0
+		for n in name_ing:
+			title = n.replace('против', f' {coefficient_1[a]} против {coefficient_2[a]}') + '          ' + time_zone[a]
+			exodus_list.append(title)
+			self.name_link_exodus[title] = link_list[a]
+			a += 1
+		self.window.list_futures.addItems(exodus_list)
+		self.window.list_futures.clicked.connect(self.item_clicked)
+
+	def item_clicked(self):
+		item = self.window.list_futures.currentItem()
+		self.window.input_link.setText(self.name_link_exodus[item.text()])
 
 	def take_link(self):
 		link = self.input_link.text()
@@ -108,6 +162,7 @@ class UI(QMainWindow):
 		self.set_old_scores_tab()
 		self.set_old_ratio_scores_tab()
 		self.set_same_teams_scores_tab()
+		self.set_exodus_tab()
 		self.window.show()
 
 	def set_basis_info_tab(self):
@@ -181,3 +236,6 @@ class UI(QMainWindow):
 		self.window.second_team_lose.setText(
 			f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_2"]} команда проиграла {self.dict_team_info["team_two_lose"]} раз</span></p></body></html>')
 
+	def set_exodus_tab(self):
+		self.window.ratio_exodus_graphic.setPixmap(
+			QPixmap(f'{self.dict_team_info["path_on_disc"]}/exodus_graphics.png'))

@@ -346,7 +346,7 @@ border: 11111px;
               <string/>
              </property>
              <layout class="QGridLayout" name="gridLayout_13">
-              <item row="1" column="0">
+              <item row="3" column="0">
                <widget class="QLabel" name="label_help_1">
                 <property name="styleSheet">
                  <string notr="true">color: rgb(255, 255, 255);</string>
@@ -356,7 +356,7 @@ border: 11111px;
                 </property>
                </widget>
               </item>
-              <item row="3" column="0">
+              <item row="5" column="0">
                <spacer name="verticalSpacer_4">
                 <property name="orientation">
                  <enum>Qt::Vertical</enum>
@@ -378,6 +378,29 @@ border: 11111px;
                  <size>
                   <width>377</width>
                   <height>0</height>
+                 </size>
+                </property>
+               </spacer>
+              </item>
+              <item row="1" column="0">
+               <widget class="QLabel" name="bo_label">
+                <property name="styleSheet">
+                 <string notr="true">color: rgb(255, 255, 255);</string>
+                </property>
+                <property name="text">
+                 <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;Количество карт &lt;/span&gt;&lt;/p&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:16pt;&quot;&gt;1-3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                </property>
+               </widget>
+              </item>
+              <item row="2" column="0">
+               <spacer name="verticalSpacer_5">
+                <property name="orientation">
+                 <enum>Qt::Vertical</enum>
+                </property>
+                <property name="sizeHint" stdset="0">
+                 <size>
+                  <width>20</width>
+                  <height>40</height>
                  </size>
                 </property>
                </spacer>
@@ -1394,18 +1417,15 @@ border: rgb(25, 43, 69);</string>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QGraphicsView" name="graphics_second_so">
+               <widget class="QLabel" name="label_4">
                 <property name="minimumSize">
                  <size>
                   <width>650</width>
                   <height>500</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>650</width>
-                  <height>500</height>
-                 </size>
+                <property name="text">
+                 <string/>
                 </property>
                </widget>
               </item>
@@ -1432,18 +1452,15 @@ border: rgb(25, 43, 69);</string>
                </widget>
               </item>
               <item row="0" column="0">
-               <widget class="QGraphicsView" name="graphics_first_so">
+               <widget class="QLabel" name="ratio_exodus_graphic">
                 <property name="minimumSize">
                  <size>
                   <width>650</width>
                   <height>500</height>
                  </size>
                 </property>
-                <property name="maximumSize">
-                 <size>
-                  <width>650</width>
-                  <height>500</height>
-                 </size>
+                <property name="text">
+                 <string/>
                 </property>
                </widget>
               </item>

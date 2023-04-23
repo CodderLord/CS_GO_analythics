@@ -86,7 +86,7 @@
      <x>10</x>
      <y>10</y>
      <width>918</width>
-     <height>621</height>
+     <height>631</height>
     </rect>
    </property>
    <property name="minimumSize">
@@ -249,7 +249,7 @@ background-color: rgb(19, 32, 52);</string>
     </attribute>
     <layout class="QGridLayout" name="gridLayout_5">
      <item row="0" column="0">
-      <widget class="QGroupBox" name="groupBox_2">
+      <widget class="QGroupBox" name="link_to_site">
        <property name="styleSheet">
         <string notr="true">background-color: rgb(25, 43, 69);
 border: 1px;</string>
@@ -257,6 +257,25 @@ border: 1px;</string>
        <property name="title">
         <string/>
        </property>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="1" column="0">
+         <widget class="QListWidget" name="list_futures">
+          <property name="styleSheet">
+           <string notr="true"/>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QLabel" name="label_2">
+          <property name="styleSheet">
+           <string notr="true">color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:10pt;&quot;&gt;Выбирите нужный матч, и нажмите 'начать' в главной вкладке&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
       </widget>
      </item>
     </layout>
