@@ -80,7 +80,7 @@ class WorkInSite(Connect):
 		download_img(self.img_url_1, self.name_1, self.path)
 		download_img(self.img_url_2, self.name_2, self.path)
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
-			raise ValueError
+			return
 		self.check_game()
 		self.history_score_dict, self.trend_score_dict, self.time_zone_history_list = self.find_history_tvt(self.name_1, self.name_2)
 		self.best_of_number = self.find_best_of()

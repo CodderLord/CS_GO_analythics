@@ -21,7 +21,7 @@ class DataAnalysis:
 		self.win_2: int = int(str(self.dict_team_info['win_2']).replace('–', '0'))  # score of winning team
 		try:
 			self.percent_win_1 = int(str(self.dict_team_info['percent_win_1']).replace('%', ''))
-		except ValueError as err:
+		except ValueError:
 			self.percent_win_1 = 0
 		try:
 			self.percent_win_2 = int(str(self.dict_team_info['percent_win_2']).replace('%', ''))

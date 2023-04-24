@@ -2,6 +2,7 @@
 # coding: utf-8
 
 from PyQt6 import uic
+
 from parsing.help_file import load_config_json
 
 from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie, QFont
@@ -9,6 +10,15 @@ from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton,
 from multi_threading.q_thread_worker import ThreadLogic
 
 from parsing.work_in_site import Connect
+
+
+def error(message, title):
+	error_ = QMessageBox()
+	error_.setWindowTitle(title)
+	error_.setText(message)
+	error_.setIcon(QMessageBox.Icon.Warning)
+	error_.setStandardButtons(QMessageBox.StandardButton.Ok)
+	error_.exec()
 
 
 class LinkInputWindow(QWidget):
@@ -102,38 +112,25 @@ class LinkInputWindow(QWidget):
 	def take_link(self):
 		link = self.input_link.text()
 		if link == '' or link.find('https://') != 0:
-			error = QMessageBox()
-			error.setWindowTitle('Ошибка ввода ссылки')
-			error.setText('Ссылка на сайт указанна неверно.')
-			error.setIcon(QMessageBox.Icon.Warning)
-			error.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-			error.exec()
+			error(message='Ссылка указана неверно.', title='Ошибка')
 		else:
-			try:
-				self.window.next_button.hide()
-				self.window.help_label.setHidden(True)
-				self.input_link.hide()
-				self.progress_bar.setHidden(False)
-				self.window.cancel_progress_button.setHidden(False)
-				self.window.tabWidgets.hide()
-				self.start_work_in_site(link)
-				self.movie_1.start()
-				self.movie_2.start()
-				self.movie_3.start()
-				self.movie_4.start()
-			except ValueError:
-				error = QMessageBox()
-				error.setWindowTitle('Ошибка работы с матчем')
-				error.setText(
-					'1.Матч уже начался, либо близок к началу.\n2.Ссылка на матч указана неверно.\n3.Одна из команд ещё не определена.')
-				error.setIcon(QMessageBox.Icon.Warning)
-				error.setStandardButtons(QMessageBox.StandardButton.Ok | QMessageBox.StandardButton.Cancel)
-				error.exec()
+			self.window.next_button.hide()
+			self.window.help_label.setHidden(True)
+			self.input_link.hide()
+			self.progress_bar.setHidden(False)
+			self.window.cancel_progress_button.setHidden(False)
+			self.window.tabWidgets.hide()
+			self.start_work_in_site(link)
+			self.movie_1.start()
+			self.movie_2.start()
+			self.movie_3.start()
+			self.movie_4.start()
 
 	def start_work_in_site(self, link):
 		self.work_in_thread = ThreadLogic(link)
 		self.work_in_thread.progress_bar_signal.connect(self.upp_value)
 		self.work_in_thread.finished_signal.connect(self.after_finish)
+		self.work_in_thread.error_signal.connect(lambda: error(message='Одна из команд неопределенна.', title='Ошибка'))
 		self.work_in_thread.start()
 
 	def upp_value(self, value):
@@ -142,6 +139,7 @@ class LinkInputWindow(QWidget):
 	def after_finish(self, path):
 		self.close()
 		UI(path)
+
 
 
 class UI(QMainWindow):
