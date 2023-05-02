@@ -15,7 +15,6 @@ from parsing.help_file import translate_to_datatime, NOW_time, first_name_dict, 
 
 from os import makedirs, path
 
-
 software_names = [SoftwareName.CHROME.value]
 operating_systems = [OperatingSystem.WINDOWS.value, OperatingSystem.LINUX.value]
 DOM = 'https://game-tournaments.com'
@@ -90,7 +89,7 @@ class WorkInSite(Connect):
 		self.find_same_teams()  # first_same_dict, second_same_dict
 		try:
 			self.team_info_dict_fill()
-		except Exception as err: 
+		except Exception as err:
 			print(err)
 
 	def ret_path(self):
@@ -133,10 +132,15 @@ class WorkInSite(Connect):
 		:return:Value error if this game is start or end
 		"""
 		time_date, time = self.redy_soup.find(class_='stage-time').find('time').get('datetime').split('T')
+		print(22)
 		year, month, day = time_date.split('-')
+		print(33)
 		hour, minute = time.split(":")
-		# hour + 2(website operation specification)
-		time_g = translate_to_datatime(year=int(year), month=int(month), day=int(day), hour=int(hour)+2, minute=int(minute))
+		print(44)
+		# Moscow GMT because site have RU dom.
+		time_g = (translate_to_datatime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute)))
+		print(NOW_time)
+		print(time_g)
 		if time_g < NOW_time:
 			print('This game is played')
 			raise ValueError
