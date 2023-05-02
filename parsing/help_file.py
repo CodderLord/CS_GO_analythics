@@ -1,4 +1,5 @@
 import datetime as dt
+from datetime import timedelta
 import json
 
 
@@ -17,4 +18,4 @@ def load_config_json(path):
 
 
 def translate_to_datatime(year: int, month: int, day: int, hour: int = 0, minute: int = 0):
-	return dt.datetime(year=year, month=month, day=day, hour=hour, minute=minute)
+	return dt.datetime(year=year, month=month, day=day, hour=hour, minute=minute) + timedelta(minutes=120)
