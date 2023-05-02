@@ -59,7 +59,9 @@ class DataAnalysis:
 		self.dict_team_info['same_teams_scores'] =\
 			self.calculate_percents(self.first_win_team_score, self.second_win_team_score),\
 			self.calculate_percents(self.second_lose_team_score, self.first_lose_team_score)
-		self.dict_team_info['first_exodus_percent'], self.dict_team_info['second_exodus_percent'] = self.exodus_percents()
+		(self.dict_team_info['first_exodus_percent'], self.dict_team_info['second_exodus_percent']),\
+			self.dict_team_info['first_percents_for_pentagon'], self.dict_team_info['second_percents_for_pentagon'] = \
+			self.exodus_percents()
 		save_info_team_dict(self.dict_team_info['path_on_disc'], self.dict_team_info)
 
 	def calculate_percents_experience(self):
@@ -180,31 +182,31 @@ class DataAnalysis:
 		second_percents = []
 		# add percents to one team
 		print(1)
-		first_percents.append(int(self.dict_team_info['percent_win_1'].replace('%', '')))
+		first_percents.append(int(self.dict_team_info['percent_coefficient_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_experience_1'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_history_one'].replace('%', '')))
-		first_percents.append(int(self.dict_team_info['percent_coefficient_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_form_one'].replace('%', '')))
-		first_percents.append(int(self.dict_team_info['percent_winning_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_same_one'].replace('%', '')))
+		first_percents.append(int(self.dict_team_info['percent_win_1'].replace('%', '')))
+		first_percents.append(int(self.dict_team_info['percent_winning_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_team_one_old_scores_win'].replace('%', '')))
-		second_percents.append(int(self.dict_team_info['percent_team_two_old_scores_lose'].replace('%', '')))
+		first_percents.append(int(self.dict_team_info['percent_team_two_old_scores_lose'].replace('%', '')))
 		print(2)
 		# add percents to two team
-		second_percents.append(int(self.dict_team_info['percent_win_2'].replace('%', '')))
+		second_percents.append(int(self.dict_team_info['percent_coefficient_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_experience_2'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_history_two'].replace('%', '')))
-		second_percents.append(int(self.dict_team_info['percent_coefficient_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_form_two'].replace('%', '')))
-		second_percents.append(int(self.dict_team_info['percent_winning_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_same_two'].replace('%', '')))
+		second_percents.append(int(self.dict_team_info['percent_win_2'].replace('%', '')))
+		second_percents.append(int(self.dict_team_info['percent_winning_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_two_old_scores_win'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_one_old_scores_lose'].replace('%', '')))
 		print(3)
 		first_exodus_percent = sum(first_percents)
 		second_exodus_percent = sum(second_percents)
 		print(4)
-		return self.calculate_percents(first_exodus_percent, second_exodus_percent)
+		return self.calculate_percents(first_exodus_percent, second_exodus_percent), first_percents[0:5], second_percents[0:5]
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):
