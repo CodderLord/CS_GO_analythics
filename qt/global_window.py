@@ -141,7 +141,6 @@ class LinkInputWindow(QWidget):
 		UI(path)
 
 
-
 class UI(QMainWindow):
 	def __init__(self, path):
 		super().__init__()
@@ -166,12 +165,15 @@ class UI(QMainWindow):
 	def set_basis_info_tab(self):
 		self.window.png_team_one.setPixmap(QPixmap(f'{self.dict_team_info["path_on_disc"]}/{self.dict_team_info["name_1"]}.jpg'))
 		self.window.png_team_two.setPixmap(QPixmap(f'{self.dict_team_info["path_on_disc"]}/{self.dict_team_info["name_2"]}.jpg'))
-		self.window.name_team_one.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_1"]}</span></p></body></html>')
+		self.window.name_team_one.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:16pt;\">{self.dict_team_info["name_1"]}</span></p></body></html>')
 		self.window.name_team_one.adjustSize()
-		self.window.name_team_two.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">{self.dict_team_info["name_2"]}</span></p></body></html>')
+		self.window.name_team_two.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:16pt;\">{self.dict_team_info["name_2"]}</span></p></body></html>')
 		self.window.name_team_two.adjustSize()
+		self.window.bo_label.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:16pt;\">Всего карт:\n{self.dict_team_info["best_of_number"]}</span></p></body></html>')
 
 	def set_history_tab(self):
+		if len(self.dict_team_info["history_time_zone_list"]) <= 1:
+			self.window.team_tabs.setTabEnabled(1, False)
 		self.window.ratio_graphics_history.setPixmap(QPixmap(f'{self.dict_team_info["path_on_disc"]}/history_graphics.png'))
 		self.window.text_first_team_percent_history_label.setText(f'<html><head/><body><p align=\"center\"><span style=\" font-size:12pt;\">Команда {self.dict_team_info["name_1"]} имеет {self.dict_team_info["percent_history_one"]} побед</span></p></body></html>')
 		self.window.text_first_team_percent_history_label.adjustSize()
@@ -221,6 +223,8 @@ class UI(QMainWindow):
 		self.window.info_label_loses_team_2_old_scores.adjustSize()
 
 	def set_same_teams_scores_tab(self):
+		if self.dict_team_info["team_one_win"] == 0 and self.dict_team_info["team_two_win"] == 0 and self.dict_team_info["team_one_lose"] == 0 and self.dict_team_info["team_two_lose"] == 0:
+			self.window.team_tabs.setTabEnabled(5, False)
 		self.window.same_team_win_graphics.setPixmap(
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/same_win_graphics.png'))
 		self.window.same_team_lose_graphics.setPixmap(
@@ -237,3 +241,5 @@ class UI(QMainWindow):
 	def set_exodus_tab(self):
 		self.window.ratio_exodus_graphic.setPixmap(
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/exodus_graphics.png'))
+		self.window.exodus_pentagon_graphic.setPixmap(
+			QPixmap(f'{self.dict_team_info["path_on_disc"]}/pentagon_graphics.png'))
