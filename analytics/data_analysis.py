@@ -16,7 +16,8 @@ class DataAnalysis:
 		self.history_score_dict: dict or None = self.dict_team_info['history_score_dict']
 		self.best_of_number: int = self.dict_team_info['best_of_number']  # number of best (bo1, bo2, bo3, bo5)
 		self.coefficient_dict: dict = self.dict_team_info['coefficient_dict']  # coefficient on bookmakers
-		self.dict_old_scores: dict = self.dict_team_info['dict_old_scores']   # dict which have team names(self.name_1, self.name_2) and their scores
+		# dict which have team names(self.name_1, self.name_2) and their scores
+		self.dict_old_scores: dict = self.dict_team_info['dict_old_scores']
 		self.win_1: int = int(str(self.dict_team_info['win_1']).replace('–', '0'))  # score of winning team
 		self.win_2: int = int(str(self.dict_team_info['win_2']).replace('–', '0'))  # score of winning team
 		try:
@@ -55,7 +56,7 @@ class DataAnalysis:
 			self.second_win_team_score = self.calculate_sames_scores()
 		self.dict_team_info['team_one_win'], self.dict_team_info['team_two_win'],\
 			self.dict_team_info['team_one_lose'], self.dict_team_info['team_two_lose'] =\
-			self.first_win_team_score,self.second_win_team_score, self.first_lose_team_score, self.second_lose_team_score
+			self.first_win_team_score, self.second_win_team_score, self.first_lose_team_score, self.second_lose_team_score
 		self.dict_team_info['same_teams_scores'] =\
 			self.calculate_percents(self.first_win_team_score, self.second_win_team_score),\
 			self.calculate_percents(self.second_lose_team_score, self.first_lose_team_score)

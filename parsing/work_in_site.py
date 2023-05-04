@@ -81,10 +81,13 @@ class WorkInSite(Connect):
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			return
 		self.check_game()
-		self.history_score_dict, self.trend_score_dict, self.time_zone_history_list = self.find_history_tvt(self.name_1, self.name_2)
+		self.history_score_dict, self.trend_score_dict, self.time_zone_history_list = self.find_history_tvt(
+			self.name_1, self.name_2)
 		self.best_of_number = self.find_best_of()
 		self.coefficient_dict = self.find_coefficient_on_bookmaker()
-		self.dict_old_scores, self.list_old_scores_one, self.list_old_scores_two, self.list_timezone_old_score_one, self.list_timezone_old_score_two, self.team_one_old_scores_win, self.team_one_old_scores_lose, self.team_two_old_scores_win, self.team_two_old_scores_lose = self.find_form_teams()
+		self.dict_old_scores, self.list_old_scores_one, self.list_old_scores_two, self.list_timezone_old_score_one,\
+			self.list_timezone_old_score_two, self.team_one_old_scores_win, self.team_one_old_scores_lose,\
+			self.team_two_old_scores_win, self.team_two_old_scores_lose = self.find_form_teams()
 		self.win_1, self.win_2, self.percent_1, self.percent_2 = self.find_experience()  # number of team wins
 		self.find_same_teams()  # first_same_dict, second_same_dict
 		try:
@@ -298,7 +301,9 @@ class WorkInSite(Connect):
 					else:
 						team_two_old_scores_lose.append(score_1)
 				team_two_old_scores_time_zone.append(f'{month_2}\n{year_2[-2]}{year_2[-1]}')
-		return dict_scores, team_one_old_scores, team_two_old_scores, team_one_old_scores_time_zone, team_two_old_scores_time_zone, team_one_old_scores_win, team_one_old_scores_lose, team_two_old_scores_win, team_two_old_scores_lose
+		return dict_scores, team_one_old_scores, team_two_old_scores, team_one_old_scores_time_zone,\
+			team_two_old_scores_time_zone, team_one_old_scores_win, team_one_old_scores_lose, team_two_old_scores_win,\
+			team_two_old_scores_lose
 
 	def find_experience(self):
 		"""

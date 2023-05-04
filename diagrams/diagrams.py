@@ -14,53 +14,76 @@ class DiagramsCreate:
 		self.path = path
 		self.team_info_dict = load_config_json(self.path)
 		# ratio history
-		self.create_ratio_diagram(self.team_info_dict['percent_history_one'], self.team_info_dict['percent_history_two'], 'history_graphics', 'Соотношение истории игр команд')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_history_one'], self.team_info_dict['percent_history_two'], 'history_graphics',
+			'Соотношение истории игр команд')
 		self.signal.emit(35)
 		time.sleep(0.3)
 		# trend history
-		self.create_trend_diagram((self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_1']],(self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_2']], self.team_info_dict['history_time_zone_list'], 'history_trend_graphics', 'Тренд истории игр')
+		self.create_trend_diagram(
+			(self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_1']],
+			(self.team_info_dict['history_trend_dict'])[self.team_info_dict['name_2']],
+			self.team_info_dict['history_time_zone_list'], 'history_trend_graphics', 'Тренд истории игр')
 		self.signal.emit(40)
 		time.sleep(0.3)
 		# ratio coefficient
-		self.create_ratio_diagram(self.team_info_dict['percent_coefficient_one'], self.team_info_dict['percent_coefficient_two'], 'coefficient_graphics', 'Соотношения коефициентов команд')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_coefficient_one'], self.team_info_dict['percent_coefficient_two'],
+			'coefficient_graphics', 'Соотношения коефициентов команд')
 		self.signal.emit(45)
 		time.sleep(0.3)
 		# ratio experience (not ready)
-		self.create_ratio_diagram(self.team_info_dict['percent_experience_1'], self.team_info_dict['percent_experience_2'], 'experience_graphics', 'Соотношение общего опыта команд\nза всё время')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_experience_1'], self.team_info_dict['percent_experience_2'], 'experience_graphics',
+			'Соотношение общего опыта команд\nза всё время')
 		self.signal.emit(50)
 		time.sleep(0.3)
 		# trend form team one
-		self.create_trend_diagram(self.team_info_dict['list_old_scores_one'], [], self.team_info_dict['list_timezone_old_score_one'], 'old_scores_trend_graphics_one', f'Тренд истории игр команды {self.team_info_dict["name_1"]}')
+		self.create_trend_diagram(
+			self.team_info_dict['list_old_scores_one'], [], self.team_info_dict['list_timezone_old_score_one'],
+			'old_scores_trend_graphics_one', f'Тренд истории игр команды {self.team_info_dict["name_1"]}')
 		self.signal.emit(55)
 		time.sleep(0.3)
 		# trend form team two
-		self.create_trend_diagram([], self.team_info_dict['list_old_scores_two'], self.team_info_dict['list_timezone_old_score_two'], 'old_scores_trend_graphics_two', f'Тренд истории игр команды {self.team_info_dict["name_2"]}')
+		self.create_trend_diagram(
+			[], self.team_info_dict['list_old_scores_two'], self.team_info_dict['list_timezone_old_score_two'],
+			'old_scores_trend_graphics_two', f'Тренд истории игр команды {self.team_info_dict["name_2"]}')
 		self.signal.emit(60)
 		time.sleep(0.3)
 		# ratio form
-		self.create_ratio_diagram(self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics', 'Соотношение истории игр команд')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_form_one'], self.team_info_dict['percent_form_two'], 'form_graphics',
+			'Соотношение истории игр команд')
 		self.signal.emit(65)
 		time.sleep(0.3)
 		# ratio winning form
-		self.create_ratio_diagram(self.team_info_dict['percent_team_one_old_scores_win'], self.team_info_dict['percent_team_two_old_scores_win'], 'old_scores_ratio_graphics_win', 'Соотношение форм команд\n(ПОБЕДЫ)')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_team_one_old_scores_win'], self.team_info_dict['percent_team_two_old_scores_win'],
+			'old_scores_ratio_graphics_win', 'Соотношение форм команд\n(ПОБЕДЫ)')
 		self.signal.emit(70)
 		time.sleep(0.3)
 		# ratio losing form
-		self.create_ratio_diagram(self.team_info_dict['percent_team_two_old_scores_lose'], self.team_info_dict['percent_team_one_old_scores_lose'], 'old_scores_ratio_graphics_lose', 'Соотношение форм команд\n(ПОРАЖЕНИЯ)')
+		self.create_ratio_diagram(
+			self.team_info_dict['percent_team_two_old_scores_lose'], self.team_info_dict['percent_team_one_old_scores_lose'],
+			'old_scores_ratio_graphics_lose', 'Соотношение форм команд\n(ПОРАЖЕНИЯ)')
 		self.signal.emit(75)
 		time.sleep(0.3)
 		# ratio same teams (WIN)
 		(first_win, second_win), (first_lose, second_lose) = self.team_info_dict['same_teams_scores']
-		self.create_ratio_diagram(first_win, second_win, 'same_win_graphics', 'Соотношение побед команд \nв игре с одинаковыми командами')
+		self.create_ratio_diagram(
+			first_win, second_win, 'same_win_graphics', 'Соотношение побед команд \nв игре с одинаковыми командами')
 		self.signal.emit(80)
 		time.sleep(0.3)
 		# ratio same teams (LOSE)
-		self.create_ratio_diagram(first_lose, second_lose, 'same_lose_graphics', 'Соотношение поражений команд \nв игре с одинаковыми командами')
+		self.create_ratio_diagram(
+			first_lose, second_lose, 'same_lose_graphics',
+			'Соотношение поражений команд \nв игре с одинаковыми командами')
 		self.signal.emit(85)
 		time.sleep(0.3)
 		# ratio exodus
 		self.create_ratio_diagram(
-			self.team_info_dict['first_exodus_percent'], self.team_info_dict['second_exodus_percent'], 'exodus_graphics', 'Исходный процент соотношения сил')
+			self.team_info_dict['first_exodus_percent'], self.team_info_dict['second_exodus_percent'], 'exodus_graphics',
+			'Исходный процент соотношения сил')
 		time.sleep(0.3)
 		# exodus diagram
 		self.create_pentagon_diagram(
@@ -127,8 +150,8 @@ class DiagramsCreate:
 		ax.tick_params(pad=16)
 		red_patch = plt.Rectangle((0, 0), 1, 1, fc="red", alpha=0.5)
 		blue_patch = plt.Rectangle((0, 0), 1, 1, fc="#004DFF", alpha=0.5)
-		legend = plt.legend([red_patch, blue_patch], [f'{name_1}', f'{name_2}'], loc='upper left', bbox_to_anchor=(-0.3, 1.13))
-		legend.get_frame().set_facecolor('#132034')
-		legend.get_frame().set_edgecolor('#132034')
-		plt.setp(legend.get_texts(), color='white')
+		tab = plt.legend([red_patch, blue_patch], [f'{name_1}', f'{name_2}'], loc='upper left', bbox_to_anchor=(-0.3, 1.13))
+		tab.get_frame().set_facecolor('#132034')
+		tab.get_frame().set_edgecolor('#132034')
+		plt.setp(tab.get_texts(), color='white')
 		plt.savefig(f'{self.path}/{name}.png')
