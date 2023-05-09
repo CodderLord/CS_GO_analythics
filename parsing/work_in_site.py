@@ -1,4 +1,5 @@
 import json
+import time
 
 import requests
 
@@ -80,7 +81,9 @@ class WorkInSite(Connect):
 		download_img(self.img_url_2, self.name_2, self.path)
 		if self.name_1 == 'TBD' or self.name_2 == 'TBD':
 			return
+		time.sleep(0.3)
 		self.check_game()
+		time.sleep(0.3)
 		self.history_score_dict, self.trend_score_dict, self.time_zone_history_list = self.find_history_tvt(
 			self.name_1, self.name_2)
 		self.best_of_number = self.find_best_of()
@@ -123,6 +126,7 @@ class WorkInSite(Connect):
 		self.team_info_dict['team_two_old_scores_lose'] = self.team_two_old_scores_lose if not None else 0
 		self.team_info_dict['list_timezone_old_score_one'] = self.list_timezone_old_score_one if not None else 0
 		self.team_info_dict['list_timezone_old_score_two'] = self.list_timezone_old_score_two if not None else 0
+		self.team_info_dict['now_time'] = str(NOW_time)
 		self.save_parse_info_on_js()
 
 	def save_parse_info_on_js(self):
