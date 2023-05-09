@@ -84,6 +84,9 @@ class LinkInputWindow(QWidget):
 					first_ = False
 					continue
 				title = i.find_next(class_='mlink').get('title').strip()
+				print(title.find('TBD'))
+				if title.find('TBD') != -1:  # if one team not determined
+					continue
 				name_ing.append(title)
 				bet_coefficient_1 = i.find_next(class_='bet-percentage bet1').text.strip() \
 					if i.find_next(class_='bet-percentage bet1') is not None else ''
