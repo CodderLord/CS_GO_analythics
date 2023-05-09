@@ -1,5 +1,6 @@
 from parsing.help_file import first_same_name_dict, second_same_name_dict
 from parsing.help_file import load_config_json
+from DB.history_matches import DataBase
 import json
 
 
@@ -64,6 +65,10 @@ class DataAnalysis:
 			self.dict_team_info['first_percents_for_pentagon'], self.dict_team_info['second_percents_for_pentagon'] = \
 			self.exodus_percents()
 		save_info_team_dict(self.dict_team_info['path_on_disc'], self.dict_team_info)
+		try:
+			self.add_info_to_data_base()
+		except Exception as err:
+			print(err)
 
 	def calculate_percents_experience(self):
 		percents_100 = self.experience_1 + self.experience_2
@@ -178,11 +183,9 @@ class DataAnalysis:
 		add all percents to one score
 		:return: int, int - exodus percent
 		"""
-		print('start>')
 		first_percents = []
 		second_percents = []
 		# add percents to one team
-		print(1)
 		first_percents.append(int(self.dict_team_info['percent_coefficient_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_experience_1'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_history_one'].replace('%', '')))
@@ -192,7 +195,6 @@ class DataAnalysis:
 		first_percents.append(int(self.dict_team_info['percent_winning_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_team_one_old_scores_win'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_team_two_old_scores_lose'].replace('%', '')))
-		print(2)
 		# add percents to two team
 		second_percents.append(int(self.dict_team_info['percent_coefficient_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_experience_2'].replace('%', '')))
@@ -203,11 +205,28 @@ class DataAnalysis:
 		second_percents.append(int(self.dict_team_info['percent_winning_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_two_old_scores_win'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_one_old_scores_lose'].replace('%', '')))
-		print(3)
 		first_exodus_percent = sum(first_percents)
 		second_exodus_percent = sum(second_percents)
-		print(4)
 		return self.calculate_percents(first_exodus_percent, second_exodus_percent), first_percents[0:5], second_percents[0:5]
+	
+	def add_info_to_data_base(self):
+		db = DataBase()
+		title = self.dict_team_info['title']
+		bo = self.dict_team_info['best_of_number']
+		if int(self.dict_team_info['first_exodus_percent'].replace('%', '')) > \
+			int(self.dict_team_info['second_exodus_percent'].replace('%', '')):
+			result = 1
+		elif int(self.dict_team_info['first_exodus_percent'].replace('%', '')) == \
+			int(self.dict_team_info['second_exodus_percent'].replace('%', '')):
+			result = 0
+		elif int(self.dict_team_info['second_exodus_percent'].replace('%', '')) > \
+			int(self.dict_team_info['first_exodus_percent'].replace('%', '')):
+			result = -1  # if 1 first team will be winning; if 0 draw; if -1 second team will be winning
+		else:
+			result = None
+		time_analytic = self.dict_team_info['now_time']
+		db.commit_match(
+			title_matches=title, bo_matches=bo, program_result=result,  time_analytic=time_analytic)
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):
