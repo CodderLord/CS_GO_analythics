@@ -211,6 +211,7 @@ class DataAnalysis:
 	
 	def add_info_to_data_base(self):
 		db = DataBase()
+		link = self.dict_team_info['link']
 		title = self.dict_team_info['title']
 		bo = self.dict_team_info['best_of_number']
 		if int(self.dict_team_info['first_exodus_percent'].replace('%', '')) > \
@@ -226,7 +227,7 @@ class DataAnalysis:
 			result = None
 		time_analytic = self.dict_team_info['now_time']
 		db.commit_match(
-			title_matches=title, bo_matches=bo, program_result=result,  time_analytic=time_analytic)
+			title_matches=title, bo_matches=bo, program_result=result,  time_analytic=time_analytic, link=link)
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):
