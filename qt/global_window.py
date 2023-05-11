@@ -71,7 +71,7 @@ class LinkInputWindow(QWidget):
 		exodus_list = []
 		link_list = []
 		con = Connect('https://game-tournaments.com/csgo')
-		tab = con.try_to_connect('https://game-tournaments.com/csgo')
+		tab = con.redy_soup
 		tab = tab.find(class_='matches table table-striped table-hover').find_all('tr')
 		a = 0
 		first_ = True
@@ -84,7 +84,6 @@ class LinkInputWindow(QWidget):
 					first_ = False
 					continue
 				title = i.find_next(class_='mlink').get('title').strip()
-				print(title.find('TBD'))
 				if title.find('TBD') != -1:  # if one team not determined
 					continue
 				name_ing.append(title)
