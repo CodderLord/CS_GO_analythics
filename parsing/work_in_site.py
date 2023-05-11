@@ -43,7 +43,23 @@ class Connect(Soup):
 			return self.connect_site(html_url)
 		else:
 			raise ValueError
-
+		
+	def find_score_post(self, url):
+		headers = {
+			"user-agent":
+				f"{self.user_agent.get_random_user_agent()}",
+			"x-requested-with":
+				"XMLHttpRequest"
+		}
+		index = url.split('-')[-1]
+		data = {
+			"rid": "matches",
+			"ajax": "score",
+			"data[mid]": index
+		}
+		response = requests.post(url, data=data, headers=headers)
+		return response.text
+	
 	def connect_site(self, html_url):
 		redy_soup = self.bs(html_url.text, 'html.parser')
 		return redy_soup
@@ -73,6 +89,7 @@ class WorkInSite(Connect):
 	def __init__(self, url):
 		super().__init__(url)
 		self.team_info_dict = {}
+		self.url = url
 		self.title = self.redy_soup.find(class_='match-header').find('h1').text.strip().replace('Матч ', '')
 		self.name_1, self.name_2 = self.title.split(' vs ')
 		self.img_url_1, self.img_url_2 = self.find_img()
@@ -103,6 +120,7 @@ class WorkInSite(Connect):
 
 	def team_info_dict_fill(self):
 		self.team_info_dict['title'] = self.title if not None else 0
+		self.team_info_dict['link'] = self.url if not None else 0
 		self.team_info_dict['name_1'] = self.name_1 if not None else 0
 		self.team_info_dict['name_2'] = self.name_2 if not None else 0
 		self.team_info_dict['img_url_1'] = self.img_url_1 if not None else 0
@@ -138,16 +156,11 @@ class WorkInSite(Connect):
 		checking the start of the game used modul datatime
 		:return:Value error if this game is start or end
 		"""
-		time_date, time = self.redy_soup.find(class_='stage-time').find('time').get('datetime').split('T')
-		print(22)
+		time_date, time_time = self.redy_soup.find(class_='stage-time').find('time').get('datetime').split('T')
 		year, month, day = time_date.split('-')
-		print(33)
-		hour, minute = time.split(":")
-		print(44)
+		hour, minute = time_time.split(":")
 		# Moscow GMT because site have RU dom.
 		time_g = (translate_to_datatime(year=int(year), month=int(month), day=int(day), hour=int(hour), minute=int(minute)))
-		print(NOW_time)
-		print(time_g)
 		if time_g < NOW_time:
 			print('This game is played')
 			raise ValueError
