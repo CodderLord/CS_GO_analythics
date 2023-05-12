@@ -5,11 +5,13 @@ from PyQt6 import uic
 
 from parsing.help_file import load_config_json
 
-from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie, QFont
-from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton, QWidget
+from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie, QFont, QPalette, QColor
+from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton, QWidget, QTableWidgetItem, QHeaderView
 from multi_threading.q_thread_worker import ThreadLogic
 
 from parsing.work_in_site import Connect
+
+from DB.history_matches import DataBase
 
 
 def error(message, title):
@@ -61,6 +63,7 @@ class LinkInputWindow(QWidget):
 		font.setPointSize(20)
 		self.window.list_futures.setFont(font)
 		self.list_funders()
+		self.tab_history()
 		self.window.show()
 
 	def list_funders(self):
@@ -105,7 +108,28 @@ class LinkInputWindow(QWidget):
 			a += 1
 		self.window.list_futures.addItems(exodus_list)
 		self.window.list_futures.clicked.connect(self.item_clicked)
-
+	
+	def tab_history(self):
+		all_matches = DataBase().show_all_matches()
+		self.window.list_history.setRowCount(len(all_matches))
+		row = 0
+		for id_match, title, bo, result, real_result, time_zone, url in all_matches:
+			self.window.list_history.setItem(row, 0, QTableWidgetItem(str(id_match)))
+			self.window.list_history.setItem(row, 1, QTableWidgetItem(title))
+			self.window.list_history.setItem(row, 2, QTableWidgetItem(str(bo)))
+			self.window.list_history.setItem(row, 3, QTableWidgetItem(str(result)))
+			self.window.list_history.setItem(row, 4, QTableWidgetItem(str(real_result)))
+			self.window.list_history.setItem(row, 5, QTableWidgetItem(str(time_zone)))
+			row += 1
+		new_font = QFont("Arial", 19)
+		self.window.list_history.setFont(new_font)
+		palette = self.window.list_history.palette()
+		self.window.list_history.resizeColumnsToContents()
+		self.window.list_history.resizeRowsToContents()
+		palette.setColor(QPalette.ColorRole.Base, QColor(0, 0, 0))
+		palette.setColor(QPalette.ColorRole.Text, QColor(255, 255, 255))
+		self.window.list_history.setPalette(palette)
+	
 	def item_clicked(self):
 		item = self.window.list_futures.currentItem()
 		self.window.input_link.setText(self.name_link_exodus[item.text()])
