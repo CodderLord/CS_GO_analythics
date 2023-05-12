@@ -191,7 +191,10 @@ class DataAnalysis:
 		first_percents.append(int(self.dict_team_info['percent_history_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_form_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_same_one'].replace('%', '')))
-		first_percents.append(int(self.dict_team_info['percent_win_1'].replace('%', '')))
+		try:
+			first_percents.append(int(self.dict_team_info['percent_win_1'].replace('%', '')))
+		except ValueError:
+			first_percents.append(0)
 		first_percents.append(int(self.dict_team_info['percent_winning_one'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_team_one_old_scores_win'].replace('%', '')))
 		first_percents.append(int(self.dict_team_info['percent_team_two_old_scores_lose'].replace('%', '')))
@@ -201,7 +204,10 @@ class DataAnalysis:
 		second_percents.append(int(self.dict_team_info['percent_history_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_form_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_same_two'].replace('%', '')))
-		second_percents.append(int(self.dict_team_info['percent_win_2'].replace('%', '')))
+		try:
+			second_percents.append(int(self.dict_team_info['percent_win_2'].replace('%', '')))
+		except ValueError:
+			second_percents.append(0)
 		second_percents.append(int(self.dict_team_info['percent_winning_two'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_two_old_scores_win'].replace('%', '')))
 		second_percents.append(int(self.dict_team_info['percent_team_one_old_scores_lose'].replace('%', '')))
@@ -216,18 +222,15 @@ class DataAnalysis:
 		bo = self.dict_team_info['best_of_number']
 		if int(self.dict_team_info['first_exodus_percent'].replace('%', '')) > \
 			int(self.dict_team_info['second_exodus_percent'].replace('%', '')):
-			result = 1
-		elif int(self.dict_team_info['first_exodus_percent'].replace('%', '')) == \
-			int(self.dict_team_info['second_exodus_percent'].replace('%', '')):
-			result = 0
+			name_result = title.split(' vs ')[0]
 		elif int(self.dict_team_info['second_exodus_percent'].replace('%', '')) > \
 			int(self.dict_team_info['first_exodus_percent'].replace('%', '')):
-			result = -1  # if 1 first team will be winning; if 0 draw; if -1 second team will be winning
+			name_result = title.split(' vs ')[1]
 		else:
-			result = None
+			name_result = 'Ничья'
 		time_analytic = self.dict_team_info['now_time']
 		db.commit_match(
-			title_matches=title, bo_matches=bo, program_result=result,  time_analytic=time_analytic, link=link)
+			title_matches=title, bo_matches=bo, program_result=name_result,  time_analytic=time_analytic, link=link)
 
 	@staticmethod
 	def calculate_percents(score_1, score_2):
