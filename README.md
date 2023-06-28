@@ -32,7 +32,13 @@ Using the application is simple:
 1. Choose the tournament you want to analyze.
 2. Select the teams you want to compare.
 3. Analyze the performance of the selected teams through the graphs provided by the application.
-
+![img find link on the match](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/0.png)
+![img history match](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/1.png)
+![img loading](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/2.png)
+![img info about team](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/3.png)
+![img coefficient and experience](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/4.png)
+![img form team](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/5.png)
+![img exodus](https://github.com/CodderLord/Heart-Matches/blob/master/img_for_README/6.png)
 ## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
