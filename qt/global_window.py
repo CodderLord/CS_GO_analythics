@@ -5,6 +5,7 @@ from PyQt6 import uic
 
 from parsing.help_file import load_config_json
 
+from PyQt6.QtCore import Qt
 from PyQt6.QtGui import QIcon, QPixmap, QTransform, QMovie, QFont, QPalette, QColor
 from PyQt6.QtWidgets import QMainWindow, QMessageBox, QProgressBar, QPushButton, QWidget, QTableWidgetItem, QHeaderView
 from multi_threading.q_thread_worker import ThreadLogic
@@ -12,6 +13,10 @@ from multi_threading.q_thread_worker import ThreadLogic
 from parsing.work_in_site import Connect
 
 from DB.history_matches import DataBase
+
+from about_gen.about_gen_ import GenTextAbout
+
+from pptx_files.create_pptx import PowerPointPresentation
 
 
 def error(message, title):
@@ -119,7 +124,7 @@ class LinkInputWindow(QWidget):
 			self.window.list_history.setItem(row, 2, QTableWidgetItem(str(bo)))
 			self.window.list_history.setItem(row, 3, QTableWidgetItem(str(result)))
 			self.window.list_history.setItem(row, 4, QTableWidgetItem(str(real_result)))
-			self.window.list_history.setItem(row, 5, QTableWidgetItem(str(time_zone)))
+			self.window.list_history.setItem(row, 5, QTableWidgetItem(str(time_zone).split('.')[0]))
 			row += 1
 		new_font = QFont("Arial", 19)
 		self.window.list_history.setFont(new_font)
@@ -128,6 +133,7 @@ class LinkInputWindow(QWidget):
 		self.window.list_history.resizeRowsToContents()
 		palette.setColor(QPalette.ColorRole.Base, QColor(0, 0, 0))
 		palette.setColor(QPalette.ColorRole.Text, QColor(255, 255, 255))
+		self.window.list_history.setStyleSheet("background-color: rgb(25, 43, 69);")
 		self.window.list_history.setPalette(palette)
 	
 	def item_clicked(self):
@@ -186,7 +192,7 @@ class UI(QMainWindow):
 		self.set_same_teams_scores_tab()
 		self.set_exodus_tab()
 		self.window.show()
-
+	
 	def set_basis_info_tab(self):
 		self.window.png_team_one.setPixmap(
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/{self.dict_team_info["name_1"]}.jpg'))
@@ -203,7 +209,21 @@ class UI(QMainWindow):
 		self.window.bo_label.setText(
 			f"""<html><head/><body><p align=\"center\"><span style=\" font-size:16pt;\">Всего карт:\n
 				{self.dict_team_info["best_of_number"]}</span></p></body></html>""")
-
+		team_one_about = GenTextAbout('RU', self.dict_team_info["name_1"], self.dict_team_info["name_1"], self.dict_team_info["name_2"], int(self.dict_team_info["history_score_dict"][self.dict_team_info["name_1"]]) + int(self.dict_team_info["history_score_dict"][self.dict_team_info["name_2"]]), self.dict_team_info["history_score_dict"][self.dict_team_info["name_1"]], str(self.dict_team_info["coefficient_dict"][self.dict_team_info["name_1"]])[0: 3], self.dict_team_info["experience_1"], len(self.dict_team_info["team_one_old_scores_win"])+len(self.dict_team_info["team_one_old_scores_lose"]), len(self.dict_team_info["team_one_old_scores_win"]), sum([int(i.split('-')[0]) for i in self.dict_team_info["first_same_dict"].values()]), sum([int(i.split('-')[1]) for i in self.dict_team_info["first_same_dict"].values()]) if self.dict_team_info["first_same_dict"] != {} else 0)
+		text_1 = team_one_about.ret_about_text()
+		self.window.text_Browser_for_team_one.setPlainText(f"""{text_1}""")
+		self.window.text_Browser_for_team_one.setStyleSheet("background-color: rgb(25, 43, 69); color: white; text-align: center;")
+		font = self.window.text_Browser_for_team_one.font()
+		font.setPointSize(16)
+		self.window.text_Browser_for_team_one.setFont(font)
+		self.window.text_Browser_for_team_one.setAlignment(Qt.AlignmentFlag.AlignCenter)
+		self.window.text_Browser_for_team_two.setFont(font)
+		team_two_about = GenTextAbout('RU', self.dict_team_info["name_2"], self.dict_team_info["name_1"], self.dict_team_info["name_2"], int(self.dict_team_info["history_score_dict"][self.dict_team_info["name_1"]]) + int(self.dict_team_info["history_score_dict"][self.dict_team_info["name_2"]]), self.dict_team_info["history_score_dict"][self.dict_team_info["name_2"]], str(self.dict_team_info["coefficient_dict"][self.dict_team_info["name_2"]])[0: 3], self.dict_team_info["experience_2"], len(self.dict_team_info["team_two_old_scores_win"])+len(self.dict_team_info["team_two_old_scores_lose"]), len(self.dict_team_info["team_two_old_scores_win"]), sum([int(i.split('-')[0]) for i in self.dict_team_info["second_same_dict"].values()]), sum([int(i.split('-')[1]) for i in self.dict_team_info["second_same_dict"].values()]) if self.dict_team_info["second_same_dict"] != {} else 0)
+		text_2 = team_two_about.ret_about_text()
+		self.window.text_Browser_for_team_two.setPlainText(f"""{text_2}""")
+		self.window.text_Browser_for_team_two.setStyleSheet("background-color: rgb(25, 43, 69); color: white; text-align: center;")
+		self.window.text_Browser_for_team_two.setAlignment(Qt.AlignmentFlag.AlignCenter)
+			
 	def set_history_tab(self):
 		if len(self.dict_team_info["history_time_zone_list"]) <= 1:
 			self.window.team_tabs.setTabEnabled(1, False)
@@ -304,3 +324,9 @@ class UI(QMainWindow):
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/exodus_graphics.png'))
 		self.window.exodus_pentagon_graphic.setPixmap(
 			QPixmap(f'{self.dict_team_info["path_on_disc"]}/pentagon_graphics.png'))
+		self.window.button_save_PDF.clicked.connect(self.create_pptx_file)
+
+	def create_pptx_file(self):
+		pptx_obj = PowerPointPresentation(self.dict_team_info)
+		pptx_obj.create_presentation()
+		

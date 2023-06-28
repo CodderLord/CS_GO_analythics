@@ -119,31 +119,31 @@ class WorkInSite(Connect):
 		return self.path
 
 	def team_info_dict_fill(self):
-		self.team_info_dict['title'] = self.title if not None else 0
-		self.team_info_dict['link'] = self.url if not None else 0
-		self.team_info_dict['name_1'] = self.name_1 if not None else 0
-		self.team_info_dict['name_2'] = self.name_2 if not None else 0
-		self.team_info_dict['img_url_1'] = self.img_url_1 if not None else 0
-		self.team_info_dict['img_url_2'] = self.img_url_2 if not None else 0
-		self.team_info_dict['path_on_disc'] = self.path if not None else 0
-		self.team_info_dict['history_score_dict'] = self.history_score_dict if not None else 0
-		self.team_info_dict['history_trend_dict'] = self.trend_score_dict if not None else 0
-		self.team_info_dict['history_time_zone_list'] = self.time_zone_history_list if not None else 0
-		self.team_info_dict['best_of_number'] = self.best_of_number if not None else 0
-		self.team_info_dict['coefficient_dict'] = self.coefficient_dict if not None else 0
-		self.team_info_dict['dict_old_scores'] = self.dict_old_scores if not None else 0
-		self.team_info_dict['win_1'] = self.win_1 if not None else 0
-		self.team_info_dict['win_2'] = self.win_2 if not None else 0
-		self.team_info_dict['percent_win_1'] = self.percent_1 if not None else 0
-		self.team_info_dict['percent_win_2'] = self.percent_2 if not None else 0
-		self.team_info_dict['list_old_scores_one'] = self.list_old_scores_one if not None else 0
-		self.team_info_dict['list_old_scores_two'] = self.list_old_scores_two if not None else 0
-		self.team_info_dict['team_one_old_scores_win'] = self.team_one_old_scores_win if not None else 0
-		self.team_info_dict['team_one_old_scores_lose'] = self.team_one_old_scores_lose if not None else 0
-		self.team_info_dict['team_two_old_scores_win'] = self.team_two_old_scores_win if not None else 0
-		self.team_info_dict['team_two_old_scores_lose'] = self.team_two_old_scores_lose if not None else 0
-		self.team_info_dict['list_timezone_old_score_one'] = self.list_timezone_old_score_one if not None else 0
-		self.team_info_dict['list_timezone_old_score_two'] = self.list_timezone_old_score_two if not None else 0
+		self.team_info_dict['title'] = self.title
+		self.team_info_dict['link'] = self.url
+		self.team_info_dict['name_1'] = self.name_1
+		self.team_info_dict['name_2'] = self.name_2
+		self.team_info_dict['img_url_1'] = self.img_url_1
+		self.team_info_dict['img_url_2'] = self.img_url_2
+		self.team_info_dict['path_on_disc'] = self.path
+		self.team_info_dict['history_score_dict'] = self.history_score_dict
+		self.team_info_dict['history_trend_dict'] = self.trend_score_dict
+		self.team_info_dict['history_time_zone_list'] = self.time_zone_history_list
+		self.team_info_dict['best_of_number'] = self.best_of_number
+		self.team_info_dict['coefficient_dict'] = self.coefficient_dict
+		self.team_info_dict['dict_old_scores'] = self.dict_old_scores
+		self.team_info_dict['win_1'] = self.win_1
+		self.team_info_dict['win_2'] = self.win_2
+		self.team_info_dict['percent_win_1'] = self.percent_1
+		self.team_info_dict['percent_win_2'] = self.percent_2
+		self.team_info_dict['list_old_scores_one'] = self.list_old_scores_one
+		self.team_info_dict['list_old_scores_two'] = self.list_old_scores_two
+		self.team_info_dict['team_one_old_scores_win'] = self.team_one_old_scores_win
+		self.team_info_dict['team_one_old_scores_lose'] = self.team_one_old_scores_lose
+		self.team_info_dict['team_two_old_scores_win'] = self.team_two_old_scores_win
+		self.team_info_dict['team_two_old_scores_lose'] = self.team_two_old_scores_lose
+		self.team_info_dict['list_timezone_old_score_one'] = self.list_timezone_old_score_one
+		self.team_info_dict['list_timezone_old_score_two'] = self.list_timezone_old_score_two
 		self.team_info_dict['now_time'] = str(NOW_time)
 		self.save_parse_info_on_js()
 
@@ -189,7 +189,7 @@ class WorkInSite(Connect):
 		try:
 			history_url = DOM + str(self.redy_soup.find(class_='btn btn-xs btn-default pull-right').get('href'))
 		except AttributeError:
-			return {f'{name_1}': [0], f'{name_2}': [0]},\
+			return {f'{name_1}': 0, f'{name_2}': 0},\
 				{f'{name_1}': [0], f'{name_2}': [0]}, ['0']
 		history_soup = self.try_to_connect(history_url)
 		tr_all = history_soup.find(class_='table-responsive').find_all('tr')

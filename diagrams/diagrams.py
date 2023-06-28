@@ -29,7 +29,7 @@ class DiagramsCreate:
 		# ratio coefficient
 		self.create_ratio_diagram(
 			self.team_info_dict['percent_coefficient_one'], self.team_info_dict['percent_coefficient_two'],
-			'coefficient_graphics', 'Соотношения коефициентов команд')
+			'coefficient_graphics', 'Соотношение коефициентов команд')
 		self.signal.emit(45)
 		time.sleep(0.3)
 		# ratio experience (not ready)

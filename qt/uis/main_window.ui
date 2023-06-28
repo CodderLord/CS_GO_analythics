@@ -1460,6 +1460,17 @@ border: rgb(25, 43, 69);</string>
           </layout>
          </widget>
         </item>
+        <item row="1" column="0">
+         <widget class="QPushButton" name="button_save_PDF">
+          <property name="styleSheet">
+           <string notr="true">background-color: rgb(25, 43, 69);
+color: rgb(255, 255, 255);</string>
+          </property>
+          <property name="text">
+           <string>Сохранить всю аналитику в PDF</string>
+          </property>
+         </widget>
+        </item>
        </layout>
       </widget>
      </widget>
